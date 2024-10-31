@@ -1,2499 +1,562 @@
-//Tue Oct 29 2024 03:26:40 GMT+0000 (Coordinated Universal Time)
+//Thu Oct 31 2024 07:07:42 GMT+0000 (Coordinated Universal Time)
 //Base:https://github.com/echo094/decode-js
 //Modify:https://github.com/smallfawn/decode_action
-(() => {
-  function b(a6) {
-    {
-      b = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (a9) {
-        return typeof a9;
-      } : function (a9) {
-        {
-          return a9 && "function" == typeof Symbol && a9.constructor === Symbol && a9 !== Symbol.prototype ? "symbol" : typeof a9;
+NAME = "仑传";
+VALY = ["lcck"];
+LOGS = 0;
+CK = "";
+var userList = [];
+channel = ["5cdcc989b198504a785efad1", "5cde70181b011b32d34f3f69", "62ce6c40373c557efc463687", "62e22699fe3fc1556e6a8819", "5cdcc9a61b011b32d34f3e5a", "6046d97aad61a43e70547c1a", "5cdcccf5b198504a785efad7"];
+class Bar {
+  constructor(_0x4a58ed) {
+    this.phone = _0x4a58ed.split("#")[0];
+    this.password = _0x4a58ed.split("#")[1];
+    this.ts = times(13);
+    this.rsakey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD6XO7e9YeAOs+cFqwa7ETJ+WXizPqQeXv68i5vqw9pFREsrqiBTRcg7wB0RIp3rJkDpaeVJLsZqYm5TW7FWx/iOiXFc+zCPvaKZric2dXCw27EvlH5rq+zwIPDAJHGAfnn1nmQH7wR3PCatEIb8pz5GFlTHMlluw4ZYmnOwg+thwIDAQAB";
+    this.logs = true;
+    this.channelid = randomArr(channel);
+  }
+  async login() {
+    let _0x33ff00 = RSA(this.password, this.rsakey);
+    let _0x459452 = _0x33ff00.replace(/\+/g, "%2B").replace(/\//g, "%2F").replace(/==/g, "%3D%3D");
+    let _0x11ed76 = "client_id=17&password=" + _0x459452 + "&phone_number=" + this.phone;
+    let _0x511c67 = await task("post", "https://passport.tmuyun.com/web/oauth/credential_auth", {}, _0x11ed76);
+    _0x511c67.code == 0 ? (this.code = _0x511c67.data.authorization_code.code, console.log("【" + this.phone + "】登录成功"), this.logs = true, await this.gettoken()) : this.logs = false;
+  }
+  async gettoken() {
+    let _0x3fc9ae = SJSxx(8) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(12);
+    let _0x384802 = SHA256("/api/zbtxz/login&&63e66232a95d5a7663ae8a2e&&" + _0x3fc9ae + "&&" + this.ts + "&&FR*r!isE5W&&18");
+    let _0x1ba6ff = {
+      "X-SESSION-ID": "63e66232a95d5a7663ae8a2e",
+      "X-REQUEST-ID": _0x3fc9ae,
+      "X-TIMESTAMP": this.ts,
+      "X-SIGNATURE": _0x384802,
+      "X-TENANT-ID": 18,
+      "User-Agent": "1.3.3;" + _0x3fc9ae + ";iPhone13,2;ios;11;Release"
+    };
+    let _0x4fce52 = "code=" + this.code + "&token=&type=-1&union_id=";
+    let _0x3f7d3b = await task("post", "https://vapp.tmuyun.com/api/zbtxz/login", _0x1ba6ff, _0x4fce52);
+    this.sessionid = _0x3f7d3b.data.session.id;
+    this.name = _0x3f7d3b.data.account.nick_name;
+  }
+  async tasklist() {
+    let _0x25de86 = SJSxx(8) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(12);
+    let _0x3654a0 = SHA256("/api/user_mumber/numberCenter&&" + this.sessionid + "&&" + _0x25de86 + "&&" + this.ts + "&&FR*r!isE5W&&18");
+    let _0x49340e = {
+      "X-SESSION-ID": this.sessionid,
+      "X-REQUEST-ID": _0x25de86,
+      "X-TIMESTAMP": this.ts,
+      "X-SIGNATURE": _0x3654a0,
+      "X-TENANT-ID": 18,
+      "User-Agent": "1.3.3;" + _0x25de86 + ";iPhone13,2;ios;11;Release"
+    };
+    let _0x81caba = await task("get", "https://vapp.tmuyun.com/api/user_mumber/numberCenter?is_new=1", _0x49340e);
+    if (_0x81caba.code == 0) {
+      console.log("【" + this.name + "】==>现有积分" + _0x81caba.data.rst.total_integral);
+      for (let _0xf2445e of _0x81caba.data.rst.user_task_list) {
+        if (_0xf2445e.name == "分享资讯给好友" && _0xf2445e.completed == 0) {
+          for (let _0x3238f7 = _0xf2445e.finish_times; _0x3238f7 < _0xf2445e.frequency; _0x3238f7++) {
+            await this.share();
+          }
         }
-      };
-      return b(a6);
+        if (_0xf2445e.name == "新闻资讯评论" && _0xf2445e.completed == 0) {
+          for (let _0x408f1c = _0xf2445e.finish_times; _0x408f1c < _0xf2445e.frequency; _0x408f1c++) {
+            await this.dailyoneword();
+            await this.comment();
+          }
+        }
+        if (_0xf2445e.name == "新闻资讯点赞" && _0xf2445e.completed == 0) {
+          for (let _0xc42b3b = _0xf2445e.finish_times; _0xc42b3b < _0xf2445e.frequency; _0xc42b3b++) {
+            await this.like();
+          }
+        }
+      }
+      for (let _0x8af186 of _0x81caba.data.daily_sign_info.daily_sign_list) {
+        _0x8af186.current == "今天" && _0x8af186.signed == false && (await this.signin());
+      }
+    } else {
+      console.log("【" + this.name + "】获取任务列表失败，请稍后再试");
     }
   }
-  function c(a6, a7) {
-    {
-      var a9 = "undefined" != typeof Symbol && a6[Symbol.iterator] || a6["@@iterator"];
-      if (!a9) {
-        {
-          if (Array.isArray(a6) || (a9 = d(a6)) || a7 && a6 && "number" == typeof a6.length) {
-            {
-              a9 && (a6 = a9);
-              var aa = 0;
-              var ab = function () {};
-              return {
-                s: ab,
-                n: function () {
-                  {
-                    var ah = {
-                      done: true
-                    };
-                    return aa >= a6.length ? ah : {
-                      done: false,
-                      value: a6[aa++]
-                    };
-                  }
-                },
-                e: function (ah) {
-                  {
-                    throw ah;
-                  }
-                },
-                f: ab
-              };
-            }
-          }
-          throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-        }
-      }
-      var ac;
-      var ad = true;
-      var ae = false;
-      return {
-        s: function () {
-          {
-            a9 = a9.call(a6);
-          }
-        },
-        n: function () {
-          {
-            var ai = a9.next();
-            ad = ai.done;
-            return ai;
-          }
-        },
-        e: function (ai) {
-          {
-            ae = true;
-            ac = ai;
-          }
-        },
-        f: function () {
-          {
-            try {
-              {
-                ad || null == a9.return || a9.return();
-              }
-            } finally {
-              {
-                if (ae) {
-                  throw ac;
-                }
-              }
-            }
-          }
-        }
-      };
-    }
+  async share() {
+    let _0x53c0b3 = this.ii[RT(0, 29)].id;
+    let _0x4308f4 = SJSxx(8) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(12);
+    let _0x5cf3b6 = SHA256("/api/user_mumber/doTask&&" + this.sessionid + "&&" + _0x4308f4 + "&&" + this.ts + "&&FR*r!isE5W&&18");
+    let _0x10c3cf = {
+      "X-SESSION-ID": this.sessionid,
+      "X-REQUEST-ID": _0x4308f4,
+      "X-TIMESTAMP": this.ts,
+      "X-SIGNATURE": _0x5cf3b6,
+      "X-TENANT-ID": 18,
+      "User-Agent": "1.3.3;" + _0x4308f4 + ";iPhone13,2;ios;11;Release"
+    };
+    let _0x28679b = "memberType=3&member_type=3&target_id=" + _0x53c0b3;
+    let _0xfbf09f = await task("post", "https://vapp.tmuyun.com/api/user_mumber/doTask", _0x10c3cf, _0x28679b);
+    _0xfbf09f.code == 0 ? (console.log("【" + this.name + "】 分享资讯成功"), await wait(10000, 18000)) : console.log("【" + this.name + "】 分享资讯失败");
   }
-  function d(a6, a7) {
-    {
-      if (a6) {
-        {
-          if ("string" == typeof a6) {
-            return f(a6, a7);
-          }
-          var a9 = {}.toString.call(a6).slice(8, -1);
-          "Object" === a9 && a6.constructor && (a9 = a6.constructor.name);
-          return "Map" === a9 || "Set" === a9 ? Array.from(a6) : "Arguments" === a9 || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(a9) ? f(a6, a7) : undefined;
-        }
-      }
-    }
+  async list() {
+    let _0x19e1f1 = SJSxx(8) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(12);
+    let _0x54099b = SHA256("/api/article/channel_list&&" + this.sessionid + "&&" + _0x19e1f1 + "&&" + this.ts + "&&FR*r!isE5W&&18");
+    let _0x527f70 = {
+      "X-SESSION-ID": this.sessionid,
+      "X-REQUEST-ID": _0x19e1f1,
+      "X-TIMESTAMP": this.ts,
+      "X-SIGNATURE": _0x54099b,
+      "X-TENANT-ID": 18,
+      "User-Agent": "1.3.3;" + _0x19e1f1 + ";iPhone13,2;ios;11;Release"
+    };
+    let _0x3132c5 = await task("get", "https://vapp.tmuyun.com/api/article/channel_list?channel_id=" + this.channelid + "&isDiFangHao=false&is_new=true&list_count=0&size=30", _0x527f70);
+    this.ii = _0x3132c5.data.article_list;
   }
-  function f(a6, a7) {
-    {
-      (null == a7 || a7 > a6.length) && (a7 = a6.length);
-      for (var a8 = 0, a9 = Array(a7); a8 < a7; a8++) {
-        a9[a8] = a6[a8];
-      }
-      return a9;
-    }
+  async dailyoneword() {
+    let _0xa203a0 = await task("get", "https://v1.jinrishici.com/all.json", {});
+    this.word = _0xa203a0.content;
   }
-  function g() {
-    "use strict";
-
-    var a6 = {
-      BJnad: function (aD, aE) {
-        return aD < aE;
-      },
-      RlPrD: function (aD, aE) {
-        return aD(aE);
-      },
-      ndkRa: "nCSex",
-      JgWVT: "kfgUZ",
-      QbFoO: function (aD, aE, aF) {
-        return aD(aE, aF);
-      },
-      EsCHm: function (aD, aE) {
-        return aD === aE;
-      },
-      lUjwe: "xoinf",
-      SUmlf: "WgGxM",
-      YYdQH: function (aD, aE) {
-        return aD === aE;
-      },
-      ZUFTQ: "WVkAJ",
-      daRez: "lhmkj",
-      cTZuh: function (aD, aE) {
-        return aD * aE;
-      },
-      pzanq: function (aD, aE, aF, aG, aH, aI, aJ, aK) {
-        return aD(aE, aF, aG, aH, aI, aJ, aK);
-      },
-      LuSLF: " API请求失败，请检查网路重试",
-      hlMTV: function (aD, aE) {
-        return aD(aE);
-      },
-      cACdi: "UBBDa",
-      aRLpY: "uiaxK",
-      bOJnb: function (aD, aE) {
-        return aD !== aE;
-      },
-      lwZXm: "normal",
-      xMmYq: function (aD, aE) {
-        return aD !== aE;
-      },
-      Qgfxr: "NjnKr",
-      rjwsq: "throw",
-      xaMTM: function (aD, aE) {
-        return aD(aE);
-      },
-      OkGCd: "ffaMf",
-      YOeMc: function (aD, aE) {
-        return aD === aE;
-      },
-      BqvVd: "qbSBt",
-      iWCes: "wBgfY",
-      ZxkUc: function (aD, aE) {
-        return aD === aE;
-      },
-      JstgF: "qpujp",
-      QUqom: function (aD, aE, aF, aG) {
-        return aD(aE, aF, aG);
-      },
-      rHrIB: function (aD, aE) {
-        return aD !== aE;
-      },
-      SyLfV: "TnRar",
-      SjfJT: "next",
-      xTBNy: "return",
-      txVKd: function (aD, aE, aF, aG, aH) {
-        return aD(aE, aF, aG, aH);
-      },
-      qFskx: function (aD, aE) {
-        return aD !== aE;
-      },
-      bcOqx: "xXIwj",
-      pzBir: "wEOUK",
-      WcRvl: function (aD) {
-        return aD();
-      },
-      dTFZh: "OaxiT",
-      LNqlQ: function (aD, aE, aF, aG, aH) {
-        return aD(aE, aF, aG, aH);
-      },
-      ODVdL: "end",
-      LzUqY: "xSUTz",
-      XkHOp: "rdXwN",
-      TIoET: "M2001J2C",
-      zFKVH: "M2001J1C",
-      XCkWO: "M2002J9E",
-      eXRhP: "M2101K9C",
-      tISDc: "2201123C",
-      FWOAg: "24031PN0DC",
-      smtzY: "2312DRAABC",
-      wQvzP: function (aD, aE) {
-        return aD + aE;
-      },
-      hOFwb: "Android",
-      zLoYZ: "oNhTR",
-      Qwuhb: "XIouh",
-      AaEhG: "object",
-      LbbBR: "__await",
-      aXrkV: "qMnZH",
-      LDgRc: "psjPN",
-      pQLDZ: function (aD, aE, aF, aG) {
-        return aD(aE, aF, aG);
-      },
-      bSaqR: "_invoke",
-      MTyIt: "Utils_Code",
-      pXgIC: function (aD, aE) {
-        return aD(aE);
-      },
-      eBrAR: function (aD, aE) {
-        return aD(aE);
-      },
-      CWecA: function (aD, aE) {
-        return aD === aE;
-      },
-      jcIJD: function (aD, aE) {
-        return aD | aE;
-      },
-      vhEwU: function (aD, aE) {
-        return aD & aE;
-      },
-      GRCtm: "[object Generator]",
-      ksUoc: "qbDna",
-      AKeLz: function (aD, aE) {
-        return aD(aE);
-      },
-      fJBkZ: "GViMl",
-      nnDzr: "GBwJe",
-      bHifW: function (aD, aE) {
-        return aD !== aE;
-      },
-      BoSTT: "xeCPp",
-      ncAqV: "AOclu",
-      jxLMD: function (aD, aE) {
-        return aD === aE;
-      },
-      BVIar: function (aD, aE) {
-        return aD !== aE;
-      },
-      hpffJ: "PlmRx",
-      BDRDR: function (aD, aE) {
-        return aD === aE;
-      },
-      MQhlf: function (aD, aE) {
-        return aD === aE;
-      },
-      Hgblf: "GEFYb",
-      fkuzA: function (aD, aE) {
-        return aD === aE;
-      },
-      QcbYR: function (aD, aE) {
-        return aD === aE;
-      },
-      EWHdG: "try statement without catch or finally",
-      oeNWd: function (aD, aE) {
-        return aD !== aE;
-      },
-      cpJaK: "ffpBN",
-      vAGQy: function (aD, aE) {
-        return aD in aE;
-      },
-      sUzIE: function (aD, aE) {
-        return aD - aE;
-      },
-      oRIlY: function (aD, aE) {
-        return aD >= aE;
-      },
-      QBoIL: function (aD, aE) {
-        return aD !== aE;
-      },
-      AwSrs: "foqyF",
-      nLkpb: "function",
-      vpOAH: "PdzEx",
-      eEdPw: "FhcXf",
-      LTyjG: "wKhcg",
-      ESgrA: function (aD, aE) {
-        return aD == aE;
-      },
-      nebcx: "WjZdv",
-      zficg: "kZxWX",
-      xJFZQ: function (aD, aE) {
-        return aD + aE;
-      },
-      KyhtY: function (aD, aE) {
-        return aD(aE);
-      },
-      CHulZ: function (aD, aE) {
-        return aD === aE;
-      },
-      eWltq: "YlyIf",
-      wrFIi: function (aD, aE) {
-        return aD == aE;
-      },
-      cADkQ: function (aD, aE) {
-        return aD === aE;
-      },
-      MQGML: "GeneratorFunction",
-      PSmBt: function (aD, aE) {
-        return aD == aE;
-      },
-      gvSim: "iKsLk",
-      agclM: function (aD, aE) {
-        return aD instanceof aE;
-      },
-      FlFwl: function (aD, aE, aF, aG) {
-        return aD(aE, aF, aG);
-      },
-      KhFey: "JUFxK",
-      hCBHf: function (aD, aE) {
-        return aD === aE;
-      },
-      ZOJIQ: function (aD, aE) {
-        return aD === aE;
-      },
-      fLcZB: "continue",
-      USTMo: function (aD, aE) {
-        return aD === aE;
-      },
-      krSmh: function (aD, aE) {
-        return aD !== aE;
-      },
-      fMdoS: "AMoft",
-      ewDSf: "OrwFg",
-      TkgWj: "yGRri",
-      rFpMp: function (aD, aE) {
-        return aD in aE;
-      },
-      vSSnj: "ilnoN",
-      jyzHH: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD6XO7e9YeAOs+cFqwa7ETJ+WXizPqQeXv68i5vqw9pFREsrqiBTRcg7wB0RIp3rJkDpaeVJLsZqYm5TW7FWx/iOiXFc+zCPvaKZric2dXCw27EvlH5rq+zwIPDAJHGAfnn1nmQH7wR3PCatEIb8pz5GFlTHMlluw4ZYmnOwg+thwIDAQAB",
-      ANGPW: function (aD) {
-        return aD();
-      },
-      KXkmp: "client_id=",
-      JySni: "&password=",
-      nnAiY: "&phone_number=",
-      iuBgG: "plQpI",
-      xePHh: function (aD, aE) {
-        return aD(aE);
-      },
-      KMwAW: function (aD, aE) {
-        return aD === aE;
-      },
-      mMZJM: "nUDCH",
-      fJaGe: "ekOES",
-      TLSWb: "string",
-      obUeu: "Object",
-      tOECv: function (aD, aE) {
-        return aD === aE;
-      },
-      aAiRD: "Map",
-      dbDCJ: function (aD, aE) {
-        return aD === aE;
-      },
-      jHikN: "Set",
-      SVynA: "Arguments",
-      xgfTu: function (aD, aE) {
-        return aD == aE;
-      },
-      JHHzO: "symbol",
-      fCcuY: "root",
-      sdCIZ: function (aD, aE) {
-        return aD > aE;
-      },
-      wSssk: "&&FR*r!isE5W&&",
-      eikQj: "(((.+)+)+)+$",
-      ziSvC: "wUBXc",
-      xazZQ: function (aD, aE) {
-        return aD - aE;
-      },
-      TWYrn: function (aD, aE) {
-        return aD === aE;
-      },
-      CTGfQ: "ydEAY",
-      pTFpp: "brhyW",
-      SBhkO: "kpqVV",
-      JUiWH: "wJwbT",
-      rmRlw: function (aD, aE) {
-        return aD(aE);
-      },
-      VvMmk: function (aD, aE) {
-        return aD(aE);
-      }
+  async comment() {
+    let _0x1fbb80 = this.ii[RT(0, 29)].id;
+    let _0x2c123d = SJSxx(8) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(12);
+    let _0x391f1e = SHA256("/api/comment/create&&" + this.sessionid + "&&" + _0x2c123d + "&&" + this.ts + "&&FR*r!isE5W&&18");
+    let _0x581ed3 = {
+      "X-SESSION-ID": this.sessionid,
+      "X-REQUEST-ID": _0x2c123d,
+      "X-TIMESTAMP": this.ts,
+      "X-SIGNATURE": _0x391f1e,
+      "X-TENANT-ID": 18,
+      "User-Agent": "1.3.3;" + _0x2c123d + ";iPhone13,2;ios;11;Release"
     };
-    g = function () {
-      {
-        return a8;
-      }
-    };
-    var a7;
-    var a8 = {
-      wrap: ah
-    };
-    var a9 = Object.prototype;
-    var aa = a9.hasOwnProperty;
-    var ab = Object.defineProperty || function (aD, aE, aF) {
-      aD[aE] = aF.value;
-    };
-    var ac = "function" == typeof Symbol ? Symbol : {};
-    var ad = ac.iterator || "@@iterator";
-    var ae = ac.asyncIterator || "@@asyncIterator";
-    var af = ac.toStringTag || "@@toStringTag";
-    function ag(aD, aE, aF) {
-      {
-        var aG = {
-          value: aF,
-          enumerable: true,
-          configurable: true,
-          writable: true
-        };
-        Object.defineProperty(aD, aE, aG);
-        return aD[aE];
-      }
-    }
-    try {
-      ag({}, "");
-    } catch (aE) {
-      {
-        ag = function (aF, aG, aH) {
-          {
-            return aF[aG] = aH;
-          }
-        };
-      }
-    }
-    function ah(aG, aH, aI, aJ) {
-      {
-        var aK = aH && aH.prototype instanceof ao ? aH : ao;
-        var aL = Object.create(aK.prototype);
-        var aM = new aB(aJ || []);
-        ab(aL, "_invoke", {
-          value: ax(aG, aI, aM)
-        });
-        return aL;
-      }
-    }
-    function ai(aG, aH, aI) {
-      {
-        try {
-          {
-            return {
-              type: "normal",
-              arg: aG.call(aH, aI)
-            };
-          }
-        } catch (aM) {
-          {
-            var aJ = {
-              type: "throw",
-              arg: aM
-            };
-            return aJ;
-          }
-        }
-      }
-    }
-    var aj = "suspendedStart";
-    var ak = "suspendedYield";
-    var al = "executing";
-    var am = "completed";
-    var an = {};
-    function ao() {}
-    function ap() {}
-    function aq() {}
-    var ar = {};
-    ag(ar, ad, function () {
-      {
-        return this;
-      }
-    });
-    var as = Object.getPrototypeOf;
-    var at = as && as(as(aC([])));
-    at && at !== a9 && aa.call(at, ad) && (ar = at);
-    aq.prototype = ao.prototype = Object.create(ar);
-    var au = aq.prototype;
-    function av(aG) {
-      {
-        ["next", "throw", "return"].forEach(function (aI) {
-          {
-            ag(aG, aI, function (aL) {
-              {
-                return this._invoke(aI, aL);
-              }
-            });
-          }
-        });
-      }
-    }
-    function aw(aG, aH) {
-      {
-        function aL(aM, aN, aO, aP) {
-          {
-            var aR = ai(aG[aM], aG, aN);
-            if ("throw" !== aR.type) {
-              {
-                var aS = aR.arg;
-                var aT = aS.value;
-                return aT && "object" == b(aT) && aa.call(aT, "__await") ? aH.resolve(aT.__await).then(function (aV) {
-                  {
-                    aL("next", aV, aO, aP);
-                  }
-                }, function (aV) {
-                  {
-                    aL("throw", aV, aO, aP);
-                  }
-                }) : aH.resolve(aT).then(function (aV) {
-                  {
-                    aS.value = aV;
-                    aO(aS);
-                  }
-                }, function (aV) {
-                  {
-                    return aL("throw", aV, aO, aP);
-                  }
-                });
-              }
-            }
-            aP(aR.arg);
-          }
-        }
-        var aJ;
-        ab(this, "_invoke", {
-          value: function (aM, aN) {
-            {
-              function aQ() {
-                {
-                  return new aH(function (aT, aU) {
-                    {
-                      aL(aM, aN, aT, aU);
-                    }
-                  });
-                }
-              }
-              return aJ = aJ ? aJ.then(aQ, aQ) : aQ();
-            }
-          }
-        });
-      }
-    }
-    function ax(aG, aH, aI) {
-      {
-        var aK = aj;
-        return function (aM, aN) {
-          {
-            if (aK === al) {
-              throw Error("Generator is already running");
-            }
-            if (aK === am) {
-              {
-                if ("throw" === aM) {
-                  throw aN;
-                }
-                var aP = {
-                  value: a7,
-                  done: true
-                };
-                return aP;
-              }
-            }
-            for (aI.method = aM, aI.arg = aN;;) {
-              {
-                var aQ = aI.delegate;
-                if (aQ) {
-                  {
-                    var aR = ay(aQ, aI);
-                    if (aR) {
-                      {
-                        if (aR === an) {
-                          continue;
-                        }
-                        return aR;
-                      }
-                    }
-                  }
-                }
-                if ("next" === aI.method) {
-                  aI.sent = aI._sent = aI.arg;
-                } else {
-                  if ("throw" === aI.method) {
-                    {
-                      if (aK === aj) {
-                        throw aK = am, aI.arg;
-                      }
-                      aI.dispatchException(aI.arg);
-                    }
-                  } else {
-                    "return" === aI.method && aI.abrupt("return", aI.arg);
-                  }
-                }
-                aK = al;
-                var aS = ai(aG, aH, aI);
-                if ("normal" === aS.type) {
-                  {
-                    if (aK = aI.done ? am : ak, aS.arg === an) {
-                      continue;
-                    }
-                    var aT = {
-                      value: aS.arg,
-                      done: aI.done
-                    };
-                    return aT;
-                  }
-                }
-                "throw" === aS.type && (aK = am, aI.method = "throw", aI.arg = aS.arg);
-              }
-            }
-          }
-        };
-      }
-    }
-    function ay(aG, aH) {
-      {
-        var aN = aH.method;
-        var aO = aG.iterator[aN];
-        if (aO === a7) {
-          aH.delegate = null;
-          "throw" === aN && aG.iterator.return && (aH.method = "return", aH.arg = a7, ay(aG, aH), "throw" === aH.method) || "return" !== aN && (aH.method = "throw", aH.arg = new TypeError("The iterator does not provide a '" + aN + "' method"));
-          return an;
-        }
-        var aL = ai(aO, aG.iterator, aH.arg);
-        if ("throw" === aL.type) {
-          aH.method = "throw";
-          aH.arg = aL.arg;
-          aH.delegate = null;
-          return an;
-        }
-        var aM = aL.arg;
-        return aM ? aM.done ? (aH[aG.resultName] = aM.value, aH.next = aG.nextLoc, "return" !== aH.method && (aH.method = "next", aH.arg = a7), aH.delegate = null, an) : aM : (aH.method = "throw", aH.arg = new TypeError("iterator result is not an object"), aH.delegate = null, an);
-      }
-    }
-    function az(aG) {
-      {
-        var aH;
-        var aI = {
-          tryLoc: aG[0]
-        };
-        1 in aG && (aI.catchLoc = aG[1]);
-        2 in aG && (aI.finallyLoc = aG[2], aI.afterLoc = aG[3]);
-        this.tryEntries.push(aI);
-      }
-    }
-    function aA(aG) {
-      {
-        var aH = aG.completion || {};
-        aH.type = "normal";
-        delete aH.arg;
-        aG.completion = aH;
-      }
-    }
-    function aB(aG) {
-      {
-        var aI = {
-          tryLoc: "root"
-        };
-        this.tryEntries = [aI];
-        aG.forEach(az, this);
-        this.reset(true);
-      }
-    }
-    function aC(aG) {
-      {
-        if (aG || "" === aG) {
-          {
-            var aI = aG[ad];
-            if (aI) {
-              return aI.call(aG);
-            }
-            if ("function" == typeof aG.next) {
-              return aG;
-            }
-            if (!isNaN(aG.length)) {
-              {
-                var aJ = -1;
-                var aK = function aM() {
-                  {
-                    for (; ++aJ < aG.length;) {
-                      if (aa.call(aG, aJ)) {
-                        aM.value = aG[aJ];
-                        aM.done = false;
-                        return aM;
-                      }
-                    }
-                    aM.value = a7;
-                    aM.done = true;
-                    return aM;
-                  }
-                };
-                return aK.next = aK;
-              }
-            }
-          }
-        }
-        throw new TypeError(b(aG) + " is not iterable");
-      }
-    }
-    ap.prototype = aq;
-    ab(au, "constructor", {
-      value: aq,
-      configurable: true
-    });
-    ab(aq, "constructor", {
-      value: ap,
-      configurable: true
-    });
-    ap.displayName = ag(aq, af, "GeneratorFunction");
-    a8.isGeneratorFunction = function (aG) {
-      {
-        var aH = "function" == typeof aG && aG.constructor;
-        return !!aH && (aH === ap || "GeneratorFunction" === (aH.displayName || aH.name));
-      }
-    };
-    a8.mark = function (aG) {
-      {
-        Object.setPrototypeOf ? Object.setPrototypeOf(aG, aq) : (aG.__proto__ = aq, ag(aG, af, "GeneratorFunction"));
-        aG.prototype = Object.create(au);
-        return aG;
-      }
-    };
-    a8.awrap = function (aG) {
-      {
-        var aI = {
-          __await: aG
-        };
-        return aI;
-      }
-    };
-    av(aw.prototype);
-    ag(aw.prototype, ae, function () {
-      {
-        return this;
-      }
-    });
-    a8.AsyncIterator = aw;
-    a8.async = function (aG, aH, aI, aJ, aK) {
-      {
-        undefined === aK && (aK = Promise);
-        var aM = new aw(ah(aG, aH, aI, aJ), aK);
-        return a8.isGeneratorFunction(aH) ? aM : aM.next().then(function (aN) {
-          {
-            return aN.done ? aN.value : aM.next();
-          }
-        });
-      }
-    };
-    av(au);
-    ag(au, af, "Generator");
-    ag(au, ad, function () {
-      {
-        return this;
-      }
-    });
-    ag(au, "toString", function () {
-      {
-        return "[object Generator]";
-      }
-    });
-    a8.keys = function (aG) {
-      {
-        var aI = Object(aG);
-        var aJ = [];
-        for (var aK in aI) aJ.push(aK);
-        aJ.reverse();
-        return function aM() {
-          {
-            for (; aJ.length;) {
-              {
-                var aP = aJ.pop();
-                if (aP in aI) {
-                  aM.value = aP;
-                  aM.done = false;
-                  return aM;
-                }
-              }
-            }
-            aM.done = true;
-            return aM;
-          }
-        };
-      }
-    };
-    a8.values = aC;
-    aB.prototype = {
-      constructor: aB,
-      reset: function (aG) {
-        {
-          if (this.prev = 0, this.next = 0, this.sent = this._sent = a7, this.done = false, this.delegate = null, this.method = "next", this.arg = a7, this.tryEntries.forEach(aA), !aG) {
-            for (var aI in this) "t" === aI.charAt(0) && aa.call(this, aI) && !isNaN(+aI.slice(1)) && (this[aI] = a7);
-          }
-        }
-      },
-      stop: function () {
-        {
-          this.done = true;
-          var aG = this.tryEntries[0].completion;
-          if ("throw" === aG.type) {
-            throw aG.arg;
-          }
-          return this.rval;
-        }
-      },
-      dispatchException: function (aG) {
-        {
-          if (this.done) {
-            throw aG;
-          }
-          var aH = this;
-          function aN(aO, aP) {
-            {
-              aK.type = "throw";
-              aK.arg = aG;
-              aH.next = aO;
-              aP && (aH.method = "next", aH.arg = a7);
-              return !!aP;
-            }
-          }
-          for (var aI = this.tryEntries.length - 1; aI >= 0; --aI) {
-            {
-              var aJ = this.tryEntries[aI];
-              var aK = aJ.completion;
-              if ("root" === aJ.tryLoc) {
-                return aN("end");
-              }
-              if (aJ.tryLoc <= this.prev) {
-                {
-                  var aL = aa.call(aJ, "catchLoc");
-                  var aM = aa.call(aJ, "finallyLoc");
-                  if (aL && aM) {
-                    {
-                      if (this.prev < aJ.catchLoc) {
-                        return aN(aJ.catchLoc, true);
-                      }
-                      if (this.prev < aJ.finallyLoc) {
-                        return aN(aJ.finallyLoc);
-                      }
-                    }
-                  } else {
-                    if (aL) {
-                      {
-                        if (this.prev < aJ.catchLoc) {
-                          return aN(aJ.catchLoc, true);
-                        }
-                      }
-                    } else {
-                      {
-                        if (!aM) {
-                          throw Error("try statement without catch or finally");
-                        }
-                        if (this.prev < aJ.finallyLoc) {
-                          return aN(aJ.finallyLoc);
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      abrupt: function (aG, aH) {
-        {
-          for (var aJ = this.tryEntries.length - 1; aJ >= 0; --aJ) {
-            {
-              var aK = this.tryEntries[aJ];
-              if (aK.tryLoc <= this.prev && aa.call(aK, "finallyLoc") && this.prev < aK.finallyLoc) {
-                {
-                  var aL = aK;
-                  break;
-                }
-              }
-            }
-          }
-          aL && ("break" === aG || "continue" === aG) && aL.tryLoc <= aH && aH <= aL.finallyLoc && (aL = null);
-          var aM = aL ? aL.completion : {};
-          aM.type = aG;
-          aM.arg = aH;
-          return aL ? (this.method = "next", this.next = aL.finallyLoc, an) : this.complete(aM);
-        }
-      },
-      complete: function (aG, aH) {
-        {
-          if ("throw" === aG.type) {
-            throw aG.arg;
-          }
-          "break" === aG.type || "continue" === aG.type ? this.next = aG.arg : "return" === aG.type ? (this.rval = this.arg = aG.arg, this.method = "return", this.next = "end") : "normal" === aG.type && aH && (this.next = aH);
-          return an;
-        }
-      },
-      finish: function (aG) {
-        {
-          for (var aI = this.tryEntries.length - 1; aI >= 0; --aI) {
-            {
-              var aJ = this.tryEntries[aI];
-              if (aJ.finallyLoc === aG) {
-                this.complete(aJ.completion, aJ.afterLoc);
-                aA(aJ);
-                return an;
-              }
-            }
-          }
-        }
-      },
-      catch: function (aG) {
-        {
-          for (var aJ = this.tryEntries.length - 1; aJ >= 0; --aJ) {
-            {
-              var aK = this.tryEntries[aJ];
-              if (aK.tryLoc === aG) {
-                {
-                  var aL = aK.completion;
-                  if ("throw" === aL.type) {
-                    {
-                      var aM = aL.arg;
-                      aA(aK);
-                    }
-                  }
-                  return aM;
-                }
-              }
-            }
-          }
-          throw Error("illegal catch attempt");
-        }
-      },
-      delegateYield: function (aG, aH, aI) {
-        this.delegate = {
-          iterator: aC(aG),
-          resultName: aH,
-          nextLoc: aI
-        };
-        "next" === this.method && (this.arg = a7);
-        return an;
-      }
-    };
-    return a8;
+    let _0x2f7f75 = "channel_article_id=" + _0x1fbb80 + "&content=" + encodeURIComponent(this.word);
+    let _0x3a5be1 = await task("post", "https://vapp.tmuyun.com/api/comment/create", _0x581ed3, _0x2f7f75);
+    _0x3a5be1.code == 0 ? (console.log("【" + this.name + "】 评论资讯成功"), await wait(10000, 18000)) : console.log("【" + this.name + "】 评论资讯失败");
   }
-  function h(a6, a7, a8, a9, aa, ab, ac) {
-    {
+  async like() {
+    let _0x2146e8 = this.ii[RT(0, 29)].id;
+    let _0x51ce31 = SJSxx(8) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(12);
+    let _0x24728d = SHA256("/api/favorite/like&&" + this.sessionid + "&&" + _0x51ce31 + "&&" + this.ts + "&&FR*r!isE5W&&18");
+    let _0x180593 = {
+      "X-SESSION-ID": this.sessionid,
+      "X-REQUEST-ID": _0x51ce31,
+      "X-TIMESTAMP": this.ts,
+      "X-SIGNATURE": _0x24728d,
+      "X-TENANT-ID": 18,
+      "User-Agent": "1.3.3;" + _0x51ce31 + ";iPhone13,2;ios;11;Release"
+    };
+    let _0x37d962 = "action=true&id=" + _0x2146e8;
+    let _0x12ec57 = await task("post", "https://vapp.tmuyun.com/api/favorite/like", _0x180593, _0x37d962);
+    _0x12ec57.code == 0 ? (console.log("【" + this.name + "】 资讯点赞成功"), await wait(10000, 18000)) : console.log("【" + this.name + "】 资讯点赞失败");
+  }
+  async signin() {
+    let _0x15c2b2 = SJSxx(8) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(4) + "-" + SJSxx(12);
+    let _0x41161f = SHA256("/api/user_mumber/sign&&" + this.sessionid + "&&" + _0x15c2b2 + "&&" + this.ts + "&&FR*r!isE5W&&18");
+    let _0x46119b = {
+      "X-SESSION-ID": this.sessionid,
+      "X-REQUEST-ID": _0x15c2b2,
+      "X-TIMESTAMP": this.ts,
+      "X-SIGNATURE": _0x41161f,
+      "X-TENANT-ID": 18,
+      "User-Agent": "1.3.3;" + _0x15c2b2 + ";iPhone13,2;ios;11;Release"
+    };
+    let _0x2b40b4 = await task("get", "https://vapp.tmuyun.com/api/user_mumber/sign", _0x46119b);
+    _0x2b40b4.code == 0 ? console.log("【" + this.name + "】 签到成功") : console.log("【" + this.name + "】 签到失败");
+  }
+}
+!(async () => {
+  console.log("蛋炒饭美食交流频道：https://t.me/+xjTie4yvzm83OTI9");
+  console.log(NAME);
+  checkEnv();
+  for (let _0x3d925a of userList) {
+    await _0x3d925a.login();
+  }
+  let _0x4b6ed2 = userList.filter(_0x12e2a4 => _0x12e2a4.logs == true);
+  if (_0x4b6ed2.length == 0) {
+    console.log("呆子，检查一下你的CK是否正确");
+    return;
+  }
+  for (let _0x551f84 of _0x4b6ed2) {
+    await _0x551f84.list();
+    await _0x551f84.tasklist();
+  }
+})().catch(_0x19332e => {
+  console.log(_0x19332e);
+}).finally(() => {});
+function randomArr(_0x285236) {
+  return _0x285236[parseInt(Math.random() * _0x285236.length, 10)];
+}
+function RT(_0x227980, _0x357a2d) {
+  return Math.round(Math.random() * (_0x357a2d - _0x227980) + _0x227980);
+}
+function times(_0x581994) {
+  if (_0x581994 == 10) {
+    let _0x31cc8c = Math.round(new Date().getTime() / 1000).toString();
+    return _0x31cc8c;
+  } else {
+    let _0x17a58c = new Date().getTime();
+    return _0x17a58c;
+  }
+}
+async function task(_0x1b4978, _0x2de3af, _0x1f2290, _0xb6e387) {
+  _0x1b4978 == "delete" ? _0x1b4978 = _0x1b4978.toUpperCase() : _0x1b4978 = _0x1b4978;
+  const _0x3cb94a = require("request");
+  _0x1b4978 == "post" && (delete _0x1f2290["content-type"], delete _0x1f2290["Content-type"], delete _0x1f2290["content-Type"], safeGet(_0xb6e387) ? _0x1f2290["Content-Type"] = "application/json;charset=UTF-8" : _0x1f2290["Content-Type"] = "application/x-www-form-urlencoded", _0xb6e387 && (_0x1f2290["Content-Length"] = lengthInUtf8Bytes(_0xb6e387)));
+  _0x1f2290.Host = _0x2de3af.replace("//", "/").split("/")[1];
+  if (_0x1b4978.indexOf("T") < 0) {
+    var _0x554d77 = {
+      url: _0x2de3af,
+      headers: _0x1f2290,
+      body: _0xb6e387
+    };
+  } else {
+    var _0x554d77 = {
+      url: _0x2de3af,
+      headers: _0x1f2290,
+      form: JSON.parse(_0xb6e387)
+    };
+  }
+  return new Promise(async _0x2a3291 => {
+    _0x3cb94a[_0x1b4978.toLowerCase()](_0x554d77, (_0x41cdb0, _0x1433eb, _0x40d06b) => {
       try {
-        {
-          var af = a6[ab](ac);
-          var ag = af.value;
-        }
-      } catch (aj) {
-        return void a8(aj);
+        LOGS == 1 && (console.log("==================请求=================="), console.log(_0x554d77), console.log("==================返回=================="), console.log(JSON.parse(_0x40d06b)));
+      } catch (_0x130276) {} finally {
+        !_0x41cdb0 ? safeGet(_0x40d06b) ? _0x40d06b = JSON.parse(_0x40d06b) : _0x40d06b = _0x40d06b : _0x40d06b = _0x2de3af + "   API请求失败，请检查网络重试\n" + _0x41cdb0;
+        return _0x2a3291(_0x40d06b);
       }
-      af.done ? a7(ag) : Promise.resolve(ag).then(a9, aa);
-    }
-  }
-  function i(a6) {
-    return function () {
-      var a9 = this;
-      var aa = arguments;
-      return new Promise(function (ab, ac) {
-        var ad = a6.apply(a9, aa);
-        function ae(ag) {
-          {
-            h(ad, ab, ac, ae, af, "next", ag);
-          }
-        }
-        function af(ag) {
-          {
-            h(ad, ab, ac, ae, af, "throw", ag);
-          }
-        }
-        ae(undefined);
-      });
-    };
-  }
-  var j = ($.isNode() ? process.env.DaChao : $.getdata("DaChao")) || "";
-  var k = ($.isNode() ? process.env.OCR_SERVER : $.getdata("OCR_SERVER")) || "https://ddddocr.xzxxn7.live";
-  var l = undefined;
-  window = {};
-  var m = "";
-  var n = "";
-  var o = "";
-  var p = "";
-  var q = "94";
-  var r = "";
-  var s = "10048";
-  var t = "";
-  var u = "";
-  var v = "";
-  var w = "";
-  var x = "";
-  var y = "";
-  var z = "";
-  var A = "";
-  var B = "";
-  var C = "";
-  function D() {
-    {
-      return E.apply(this, arguments);
-    }
-  }
-  function E() {
-    E = i(g().mark(function a8() {
-      {
-        var aa;
-        var ab;
-        var ac;
-        var ad;
-        var af;
-        var ag;
-        var ah;
-        var ai;
-        var aj;
-        var ak;
-        var al;
-        var am;
-        var an;
-        var ao;
-        var ap;
-        var aq;
-        var ar;
-        var as;
-        var at;
-        var au;
-        var av;
-        var aw;
-        var ax;
-        var ay;
-        var az;
-        var aA;
-        var aB;
-        var aC;
-        var aD;
-        var aE;
-        var aF;
-        var aG;
-        var aH;
-        var aI;
-        var aJ;
-        var aK;
-        var aL;
-        var aM;
-        var aN;
-        var aO;
-        var aP;
-        var aQ;
-        var aR;
-        var aS;
-        var aT;
-        var aU;
-        var aV;
-        var aW;
-        var aX;
-        var aY;
-        var aZ;
-        var b0;
-        var b1;
-        var b2;
-        var b3;
-        var b4;
-        var b5;
-        var b6;
-        var b7;
-        var b8;
-        var b9;
-        var ba;
-        var bb;
-        var bc;
-        var bd;
-        var be;
-        var bf;
-        var bg;
-        var bh;
-        return g().wrap(function (bi) {
-          {
-            for (;;) {
-              switch (bi.prev = bi.next) {
-                case 0:
-                  if (console.log("作者：@xzxxn777\n频道：https://t.me/xzxxn777\n群组：https://t.me/xzxxn7777\n自用机场推荐：https://xn--diqv0fut7b.com\n"), j) {
-                    {
-                      bi.next = 6;
-                      break;
-                    }
-                  }
-                  console.log("先去boxjs填写账号密码");
-                  bi.next = 5;
-                  return a4("先去boxjs填写账号密码");
-                case 5:
-                  return bi.abrupt("return");
-                case 6:
-                  bi.next = 8;
-                  return a2();
-                case 8:
-                  l = bi.sent;
-                  aa = j.split(" ");
-                  ab = c(aa);
-                  bi.prev = 11;
-                  ab.s();
-                case 13:
-                  if ((ac = ab.n()).done) {
-                    {
-                      bi.next = 309;
-                      break;
-                    }
-                  }
-                  ad = ac.value;
-                  console.log("随机生成UA");
-                  af = a1();
-                  w = af.ua;
-                  x = af.commonUa;
-                  y = af.uuid;
-                  console.log(w);
-                  console.log(x);
-                  t = ad.split("&")[0];
-                  u = ad.split("&")[1];
-                  v = ad.split("&")[2];
-                  console.log("用户：".concat(t, "开始任务"));
-                  console.log("获取sessionId");
-                  bi.next = 29;
-                  return L("/api/account/init");
-                case 29:
-                  ag = bi.sent;
-                  p = ag.data.session.id;
-                  console.log(p);
-                  console.log("获取signature_key");
-                  bi.next = 35;
-                  return F("/web/init?client_id=".concat(s));
-                case 35:
-                  ah = bi.sent;
-                  m = ah.data.client.signature_key;
-                  console.log(m);
-                  console.log("获取code");
-                  bi.next = 41;
-                  return H("/web/oauth/credential_auth");
-                case 41:
-                  if (ai = bi.sent, ai.data) {
-                    {
-                      bi.next = 45;
-                      break;
-                    }
-                  }
-                  console.log(ai.message);
-                  return bi.abrupt("continue", 307);
-                case 45:
-                  aj = ai.data.authorization_code.code;
-                  console.log(aj);
-                  console.log("登录");
-                  bi.next = 50;
-                  return L("/api/zbtxz/login", "check_token=&code=".concat(aj, "&token=&type=-1&union_id="));
-                case 50:
-                  ak = bi.sent;
-                  console.log("登录成功");
-                  r = ak.data.session.account_id;
-                  p = ak.data.session.id;
-                  console.log("————————————");
-                  console.log("有缘对对碰");
-                  al = 0;
-                case 57:
-                  if (!(al < 5)) {
-                    {
-                      bi.next = 67;
-                      break;
-                    }
-                  }
-                  bi.next = 60;
-                  return T("/open/xxdtest/dailyMatch/controller.php", "type=105&score=100");
-                case 60:
-                  if (am = bi.sent, console.log(am), 1 == am.status) {
-                    {
-                      bi.next = 64;
-                      break;
-                    }
-                  }
-                  return bi.abrupt("break", 67);
-                case 64:
-                  al++;
-                  bi.next = 57;
-                  break;
-                case 67:
-                  bi.next = 69;
-                  return J("/api/user_mumber/account_detail");
-                case 69:
-                  an = bi.sent;
-                  ao = Math.round(new Date().getTime() / 1000).toString();
-                  bi.next = 73;
-                  return P("/memberhy/tm/signature", {
-                    accountId: r,
-                    signature: CryptoJS.SHA256(" &id&mobile&nick_name&&".concat(ao, "&&KO>N<O5&3^L1%23YH0H1#G91*2H")).toString(),
-                    mobile: "1",
-                    sessionId: p,
-                    login: "1",
-                    user: {
-                      realName: "",
-                      image_url: an.data.rst.image_url,
-                      nick_name: an.data.rst.nick_name,
-                      is_face_verify: 0,
-                      idcard: "",
-                      id: r
-                    },
-                    timestamp: ao,
-                    sign: "xsb_hn"
-                  });
-                case 73:
-                  ap = bi.sent;
-                  z = JSON.stringify({
-                    id: ap.id,
-                    black: 0,
-                    btoken: ap.btoken,
-                    expire: ap.expire,
-                    token: ap.token,
-                    source: "xsb_hn",
-                    mobile: ap.mobile,
-                    mark: ap.mark,
-                    mtoken: ap.mtoken,
-                    stoken: ap.stoken,
-                    nick_name: encodeURI(ap.nick_name),
-                    avatar: ap.avatar
-                  });
-                  bi.next = 77;
-                  return N("/lotteryhy/designh5/client/activity/7ca9b5b985df4858726af59b2933d5eb");
-                case 77:
-                  aq = bi.sent;
-                  console.log("拥有".concat(aq.response.remain_counts, "次抽奖"));
-                  ar = 0;
-                case 80:
-                  if (!(ar < aq.response.remain_counts)) {
-                    {
-                      bi.next = 88;
-                      break;
-                    }
-                  }
-                  bi.next = 83;
-                  return P("/lotteryhy/api/client/cj/awd/drw/7ca9b5b985df4858726af59b2933d5eb", {});
-                case 83:
-                  as = bi.sent;
-                  as.award_name ? (console.log("抽奖获得：".concat(as.award_name)), n += "用户：".concat(t, " 抽奖获得：").concat(as.award_name, "\n")) : (console.log(JSON.stringify(as)), n += "用户：".concat(t, " 抽奖获得：").concat(as.error_message, "\n"));
-                case 85:
-                  ar++;
-                  bi.next = 80;
-                  break;
-                case 88:
-                  bi.next = 90;
-                  return N("/lotteryhy/api/client/cj/my/prize/info/7ca9b5b985df4858726af59b2933d5eb?page=1&count=100");
-                case 90:
-                  at = bi.sent;
-                  au = c(at.data);
-                  bi.prev = 92;
-                  au.s();
-                case 94:
-                  if ((av = au.n()).done) {
-                    {
-                      bi.next = 110;
-                      break;
-                    }
-                  }
-                  if (aw = av.value, 3 != aw.prize_type || 2 == aw.status) {
-                    {
-                      bi.next = 108;
-                      break;
-                    }
-                  }
-                  if (console.log("奖品：".concat(aw.prize_content, " code：").concat(aw.prize_info.code)), !v) {
-                    {
-                      bi.next = 107;
-                      break;
-                    }
-                  }
-                  var bk = {
-                    code: aw.prize_info.code
-                  };
-                  ax = "";
-                  bi.next = 102;
-                  return R("/lotteryhy/api/client/cj/send/pak", bk);
-                case 102:
-                  ay = bi.sent;
-                  ay.success ? (console.log("领取成功"), ax = "领取成功") : (console.log(ay.error_message), ax = ay.error_message);
-                  o += "用户：".concat(t, " 奖品：").concat(aw.prize_content, " 领取结果：").concat(ax, "\n");
-                  bi.next = 108;
-                  break;
-                case 107:
-                  o += "用户：".concat(t, " 微信领取链接：https://m.aihoge.com/lottery/rotor/drawRedPacket?CHECK_CODE=").concat(aw.prize_info.code, "\n");
-                case 108:
-                  bi.next = 94;
-                  break;
-                case 110:
-                  bi.next = 115;
-                  break;
-                case 112:
-                  bi.prev = 112;
-                  bi.t0 = bi.catch(92);
-                  au.e(bi.t0);
-                case 115:
-                  bi.prev = 115;
-                  au.f();
-                  return bi.finish(115);
-                case 118:
-                  if (console.log("————————————"), console.log("获取id"), C) {
-                    {
-                      bi.next = 130;
-                      break;
-                    }
-                  }
-                  bi.next = 123;
-                  return J("/api/myPage/list");
-                case 123:
-                  az = bi.sent;
-                  aA = /\/h5\?mark=sign@designh5&tid=([a-zA-Z0-9]+)/;
-                  aB = JSON.stringify(az).match(aA);
-                  aB && (C = aB[1]);
-                  aA = /\/h5\?mark=news-read@designh5&tid=([a-zA-Z0-9]+)/;
-                  aB = JSON.stringify(az).match(aA);
-                  aB && (B = aB[1]);
-                case 130:
-                  if (B && C) {
-                    {
-                      bi.next = 133;
-                      break;
-                    }
-                  }
-                  console.log("获取id失败");
-                  return bi.abrupt("continue", 307);
-                case 133:
-                  console.log("签到id：".concat(C));
-                  console.log("阅读id：".concat(B));
-                  ao = Math.round(new Date().getTime() / 1000).toString();
-                  bi.next = 138;
-                  return P("/memberhy/tm/signature", {
-                    accountId: r,
-                    signature: CryptoJS.SHA256(" &id&mobile&nick_name&&".concat(ao, "&&KO>N<O5&3^L1%23YH0H1#G91*2H")).toString(),
-                    mobile: "1",
-                    sessionId: p,
-                    login: "1",
-                    user: {
-                      realName: "",
-                      image_url: an.data.rst.image_url,
-                      nick_name: an.data.rst.nick_name,
-                      is_face_verify: 0,
-                      idcard: "",
-                      id: r
-                    },
-                    timestamp: ao,
-                    sign: "xsb_hn"
-                  });
-                case 138:
-                  ap = bi.sent;
-                  z = JSON.stringify({
-                    id: ap.id,
-                    black: 0,
-                    btoken: ap.btoken,
-                    expire: ap.expire,
-                    token: ap.token,
-                    source: "xsb_hn",
-                    mobile: ap.mobile,
-                    mark: ap.mark,
-                    mtoken: ap.mtoken,
-                    stoken: ap.stoken,
-                    nick_name: encodeURI(ap.nick_name),
-                    avatar: ap.avatar
-                  });
-                  console.log("开始签到");
-                  aC = new (l.loadJSEncrypt())();
-                  aC.setPublicKey("-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0G25Cq2HxQQ+gX9H2dzb6sbRtHzD8JbHRmOrAFzaWI2kdzbPuga4ZlqxOAyoAm8ucIAeKD4joUn+dN1wYC03qCgloNU21KUJUls/Htp2RwxpmoncSIAOZvSQQ6Kl3vLPYlG6GetwYYN83sG85K+3w4D89hBGHuYqKQyQsUvntxi5UVoNfo674QsCvqxHxZAuEXKoEagzUoSu8gWrDTuhRK4aQcDpnCslwKycaO63UBvfTlBG0Jc7sqzXxapTArbqaA58XCM8dRIZdp7DR/V7qucn/PwIOGJrOu09/cjndwIpeki8HXa9rvgWwiwZCy289vgRoxzIcLrQJ2oC1MK2RwIDAQAB-----END PUBLIC KEY-----");
-                  aD = aC.encrypt(JSON.stringify({
-                    activity_id: C,
-                    timestamp: Math.round(new Date().getTime() / 1000).toString()
-                  }));
-                  bi.next = 146;
-                  return P("/signhy/client/actSign/actSign", {
-                    params: aD
-                  });
-                case 146:
-                  aE = bi.sent;
-                  0 == aE.error_code ? console.log("签到成功") : console.log(aE.error_message);
-                  bi.next = 150;
-                  return N("/signhy/client/actSign/getRelationCjList?activity_id=".concat(C));
-                case 150:
-                  aF = bi.sent;
-                  aG = c(aF.response);
-                  bi.prev = 152;
-                  aG.s();
-                case 154:
-                  if ((aH = aG.n()).done) {
-                    {
-                      bi.next = 199;
-                      break;
-                    }
-                  }
-                  aI = aH.value;
-                  console.log("活动：".concat(aI.title));
-                  console.log("拥有".concat(aI.draw_num, "次抽奖"));
-                  aJ = 0;
-                case 159:
-                  if (!(aJ < aI.draw_num)) {
-                    {
-                      bi.next = 167;
-                      break;
-                    }
-                  }
-                  bi.next = 162;
-                  return P("/lotteryhy/api/client/cj/awd/drw/".concat(aI.hashid), {});
-                case 162:
-                  aK = bi.sent;
-                  aK.award_name ? (console.log("抽奖获得：".concat(aK.award_name)), n += "用户：".concat(t, " 抽奖获得：").concat(aK.award_name, "\n")) : (console.log(JSON.stringify(aK)), n += "用户：".concat(t, " 抽奖获得：").concat(aK.error_message, "\n"));
-                case 164:
-                  aJ++;
-                  bi.next = 159;
-                  break;
-                case 167:
-                  bi.next = 169;
-                  return N("/lotteryhy/api/client/cj/my/prize/info/".concat(aI.hashid, "?page=1&count=100"));
-                case 169:
-                  aL = bi.sent;
-                  aM = c(aL.data);
-                  bi.prev = 171;
-                  aM.s();
-                case 173:
-                  if ((aN = aM.n()).done) {
-                    {
-                      bi.next = 189;
-                      break;
-                    }
-                  }
-                  if (aO = aN.value, 3 != aO.prize_type || 2 == aO.status) {
-                    {
-                      bi.next = 187;
-                      break;
-                    }
-                  }
-                  if (console.log("奖品：".concat(aO.prize_content, " code：").concat(aO.prize_info.code)), !v) {
-                    {
-                      bi.next = 186;
-                      break;
-                    }
-                  }
-                  var bl = {
-                    code: aO.prize_info.code
-                  };
-                  aP = "";
-                  bi.next = 181;
-                  return R("/lotteryhy/api/client/cj/send/pak", bl);
-                case 181:
-                  aQ = bi.sent;
-                  aQ.success ? (console.log("领取成功"), aP = "领取成功") : (console.log(aQ.error_message), aP = aQ.error_message);
-                  o += "用户：".concat(t, " 奖品：").concat(aO.prize_content, " 领取结果：").concat(aP, "\n");
-                  bi.next = 187;
-                  break;
-                case 186:
-                  o += "用户：".concat(t, " 微信领取链接：https://m.aihoge.com/lottery/rotor/drawRedPacket?CHECK_CODE=").concat(aO.prize_info.code, "\n");
-                case 187:
-                  bi.next = 173;
-                  break;
-                case 189:
-                  bi.next = 194;
-                  break;
-                case 191:
-                  bi.prev = 191;
-                  bi.t1 = bi.catch(171);
-                  aM.e(bi.t1);
-                case 194:
-                  bi.prev = 194;
-                  aM.f();
-                  return bi.finish(194);
-                case 197:
-                  bi.next = 154;
-                  break;
-                case 199:
-                  bi.next = 204;
-                  break;
-                case 201:
-                  bi.prev = 201;
-                  bi.t2 = bi.catch(152);
-                  aG.e(bi.t2);
-                case 204:
-                  bi.prev = 204;
-                  aG.f();
-                  return bi.finish(204);
-                case 207:
-                  console.log("————————————");
-                  console.log("阅读抽奖");
-                  console.log("滑块验证");
-                  bi.next = 212;
-                  return N("/newshy/api/client/news/getTnCode?t=".concat(Math.random()));
-                case 212:
-                  aR = bi.sent;
-                  bi.next = 215;
-                  return V("".concat(k, "/crop"), {
-                    image: aR.img,
-                    y_coordinate: 150
-                  });
-                case 215:
-                  if (aS = bi.sent, aS) {
-                    {
-                      bi.next = 221;
-                      break;
-                    }
-                  }
-                  console.log("ddddocr服务异常");
-                  bi.next = 220;
-                  return a4("ddddocr服务异常");
-                case 220:
-                  return bi.abrupt("continue", 307);
-                case 221:
-                  var bm = {
-                    slidingImage: aS.slidingImage,
-                    backImage: aS.backImage
-                  };
-                  bi.next = 223;
-                  return V("".concat(k, "/slideComparison"), bm);
-                case 223:
-                  if (aT = bi.sent, aT) {
-                    {
-                      bi.next = 229;
-                      break;
-                    }
-                  }
-                  console.log("ddddocr服务异常");
-                  bi.next = 228;
-                  return a4("ddddocr服务异常");
-                case 228:
-                  return bi.abrupt("continue", 307);
-                case 229:
-                  console.log(aT);
-                  aU = aR.request_id;
-                  aV = aT.result;
-                  bi.next = 234;
-                  return N("/newshy/api/client/news/list/".concat(B));
-                case 234:
-                  aW = bi.sent;
-                  aX = c(aW.data[0].information_content_data[0].data);
-                  bi.prev = 236;
-                  aX.s();
-                case 238:
-                  if ((aY = aX.n()).done) {
-                    {
-                      bi.next = 254;
-                      break;
-                    }
-                  }
-                  for (aZ = aY.value, console.log("文章：".concat(aZ.title)), b0 = aZ.link.split("?")[1], b1 = {}, b2 = b0.split("&"), b3 = 0, b4 = b2.length; b3 < b4; b3++) {
-                    b5 = b2[b3].split("=");
-                    b1[b5[0]] = b5[1];
-                  }
-                  b6 = new (l.loadJSEncrypt())();
-                  b6.setPublicKey("-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0G25Cq2HxQQ+gX9H2dzb6sbRtHzD8JbHRmOrAFzaWI2kdzbPuga4ZlqxOAyoAm8ucIAeKD4joUn+dN1wYC03qCgloNU21KUJUls/Htp2RwxpmoncSIAOZvSQQ6Kl3vLPYlG6GetwYYN83sG85K+3w4D89hBGHuYqKQyQsUvntxi5UVoNfo674QsCvqxHxZAuEXKoEagzUoSu8gWrDTuhRK4aQcDpnCslwKycaO63UBvfTlBG0Jc7sqzXxapTArbqaA58XCM8dRIZdp7DR/V7qucn/PwIOGJrOu09/cjndwIpeki8HXa9rvgWwiwZCy289vgRoxzIcLrQJ2oC1MK2RwIDAQAB-----END PUBLIC KEY-----");
-                  b7 = b6.encrypt(JSON.stringify({
-                    news_id: B,
-                    item_id: aZ.item_id,
-                    request_id: aU,
-                    timestamp: Math.round(new Date().getTime() / 1000).toString(),
-                    tn_x: aV
-                  }));
-                  bi.next = 250;
-                  return P("/newshy/api/client/news/readArticle", {
-                    params: b7
-                  });
-                case 250:
-                  b8 = bi.sent;
-                  console.log("阅读：".concat(null == b8 ? undefined : b8.success));
-                case 252:
-                  bi.next = 238;
-                  break;
-                case 254:
-                  bi.next = 259;
-                  break;
-                case 256:
-                  bi.prev = 256;
-                  bi.t3 = bi.catch(236);
-                  aX.e(bi.t3);
-                case 259:
-                  bi.prev = 259;
-                  aX.f();
-                  return bi.finish(259);
-                case 262:
-                  A = aW.data[0].draw.activity_id;
-                  console.log("抽奖id：".concat(A));
-                  bi.next = 266;
-                  return N("/lotteryhy/designh5/client/activity/".concat(A));
-                case 266:
-                  b9 = bi.sent;
-                  console.log("拥有".concat(b9.response.remain_counts, "次抽奖"));
-                  ba = 0;
-                case 269:
-                  if (!(ba < b9.response.remain_counts)) {
-                    {
-                      bi.next = 277;
-                      break;
-                    }
-                  }
-                  bi.next = 272;
-                  return P("/lotteryhy/api/client/cj/awd/drw/".concat(A), {});
-                case 272:
-                  bb = bi.sent;
-                  bb.award_name ? (console.log("抽奖获得：".concat(bb.award_name)), n += "用户：".concat(t, " 抽奖获得：").concat(bb.award_name, "\n")) : (console.log(JSON.stringify(bb)), n += "用户：".concat(t, " 抽奖获得：").concat(bb.error_message, "\n"));
-                case 274:
-                  ba++;
-                  bi.next = 269;
-                  break;
-                case 277:
-                  bi.next = 279;
-                  return N("/lotteryhy/api/client/cj/my/prize/info/".concat(A, "?page=1&count=100"));
-                case 279:
-                  bc = bi.sent;
-                  bd = c(bc.data);
-                  bi.prev = 281;
-                  bd.s();
-                case 283:
-                  if ((be = bd.n()).done) {
-                    {
-                      bi.next = 299;
-                      break;
-                    }
-                  }
-                  if (bf = be.value, 3 != bf.prize_type || 2 == bf.status) {
-                    {
-                      bi.next = 297;
-                      break;
-                    }
-                  }
-                  if (console.log("奖品：".concat(bf.prize_content, " code：").concat(bf.prize_info.code)), !v) {
-                    {
-                      bi.next = 296;
-                      break;
-                    }
-                  }
-                  var bn = {
-                    code: bf.prize_info.code
-                  };
-                  bg = "";
-                  bi.next = 291;
-                  return R("/lotteryhy/api/client/cj/send/pak", bn);
-                case 291:
-                  bh = bi.sent;
-                  bh.success ? (console.log("领取成功"), bg = "领取成功") : (console.log(bh.error_message), bg = bh.error_message);
-                  o += "用户：".concat(t, " 奖品：").concat(bf.prize_content, " 领取结果：").concat(bg, "\n");
-                  bi.next = 297;
-                  break;
-                case 296:
-                  o += "用户：".concat(t, " 微信领取链接：https://m.aihoge.com/lottery/rotor/drawRedPacket?CHECK_CODE=").concat(bf.prize_info.code, "\n");
-                case 297:
-                  bi.next = 283;
-                  break;
-                case 299:
-                  bi.next = 304;
-                  break;
-                case 301:
-                  bi.prev = 301;
-                  bi.t4 = bi.catch(281);
-                  bd.e(bi.t4);
-                case 304:
-                  bi.prev = 304;
-                  bd.f();
-                  return bi.finish(304);
-                case 307:
-                  bi.next = 13;
-                  break;
-                case 309:
-                  bi.next = 314;
-                  break;
-                case 311:
-                  bi.prev = 311;
-                  bi.t5 = bi.catch(11);
-                  ab.e(bi.t5);
-                case 314:
-                  bi.prev = 314;
-                  ab.f();
-                  return bi.finish(314);
-                case 317:
-                  if (!n) {
-                    {
-                      bi.next = 320;
-                      break;
-                    }
-                  }
-                  bi.next = 320;
-                  return a4(n);
-                case 320:
-                  if (!o) {
-                    {
-                      bi.next = 323;
-                      break;
-                    }
-                  }
-                  bi.next = 323;
-                  return a4(o);
-                case 323:
-                case "end":
-                  return bi.stop();
-              }
-            }
-          }
-        }, a8, null, [[11, 311, 314, 317], [92, 112, 115, 118], [152, 201, 204, 207], [171, 191, 194, 197], [236, 256, 259, 262], [281, 301, 304, 307]]);
-      }
-    }));
-    return E.apply(this, arguments);
-  }
-  function F(a6) {
-    {
-      return G.apply(this, arguments);
-    }
-  }
-  function G() {
-    G = i(g().mark(function a7(a8) {
-      return g().wrap(function (aa) {
-        for (;;) {
-          switch (aa.prev = aa.next) {
-            case 0:
-              return aa.abrupt("return", new Promise(function (ac) {
-                var ae = {
-                  url: "https://passport.tmuyun.com".concat(a8),
-                  headers: {
-                    Connection: "Keep-Alive",
-                    "Cache-Control": "no-cache",
-                    "X-REQUEST-ID": Z(),
-                    "Accept-Encoding": "gzip",
-                    "user-agent": w
-                  }
-                };
-                $.get(ae, function () {
-                  var ag = i(g().mark(function ah(ai, aj, ak) {
-                    return g().wrap(function (al) {
-                      for (;;) {
-                        switch (al.prev = al.next) {
-                          case 0:
-                            try {
-                              ai ? (console.log("".concat(JSON.stringify(ai))), console.log("".concat($.name, " API请求失败，请检查网路重试"))) : ac(JSON.parse(ak));
-                            } catch (am) {
-                              $.logErr(am, aj);
-                            } finally {
-                              ac();
-                            }
-                          case 1:
-                          case "end":
-                            return al.stop();
-                        }
-                      }
-                    }, ah);
-                  }));
-                  return function (ai, aj, ak) {
-                    return ag.apply(this, arguments);
-                  };
-                }());
-              }));
-            case 1:
-            case "end":
-              return aa.stop();
-          }
-        }
-      }, a7);
-    }));
-    return G.apply(this, arguments);
-  }
-  function H(a6) {
-    return I.apply(this, arguments);
-  }
-  function I() {
-    I = i(g().mark(function a7(a8) {
-      var aa;
-      return g().wrap(function (ab) {
-        for (;;) {
-          switch (ab.prev = ab.next) {
-            case 0:
-              aa = X();
-              return ab.abrupt("return", new Promise(function (ac) {
-                var ae = {
-                  url: "https://passport.tmuyun.com".concat(a8),
-                  headers: {
-                    Connection: "Keep-Alive",
-                    "X-REQUEST-ID": aa.uuid,
-                    "X-SIGNATURE": aa.signature,
-                    "Cache-Control": "no-cache",
-                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-                    "Accept-Encoding": "gzip",
-                    "user-agent": w
-                  },
-                  body: aa.body
-                };
-                $.post(ae, function () {
-                  var ag = i(g().mark(function ah(ai, aj, ak) {
-                    return g().wrap(function (am) {
-                      for (;;) {
-                        switch (am.prev = am.next) {
-                          case 0:
-                            try {
-                              ai ? (console.log("".concat(JSON.stringify(ai))), console.log("".concat($.name, " API请求失败，请检查网路重试"))) : ac(JSON.parse(ak));
-                            } catch (an) {
-                              $.logErr(an, aj);
-                            } finally {
-                              ac();
-                            }
-                          case 1:
-                          case "end":
-                            return am.stop();
-                        }
-                      }
-                    }, ah);
-                  }));
-                  return function (ai, aj, ak) {
-                    return ag.apply(this, arguments);
-                  };
-                }());
-              }));
-            case 2:
-            case "end":
-              return ab.stop();
-          }
-        }
-      }, a7);
-    }));
-    return I.apply(this, arguments);
-  }
-  function J(a6) {
-    return K.apply(this, arguments);
-  }
-  function K() {
-    K = i(g().mark(function a7(a8) {
-      var aa;
-      return g().wrap(function (ab) {
-        for (;;) {
-          switch (ab.prev = ab.next) {
-            case 0:
-              aa = Y(a8);
-              return ab.abrupt("return", new Promise(function (ad) {
-                var ae = {
-                  url: "https://vapp.tmuyun.com".concat(a8),
-                  headers: {
-                    Connection: "Keep-Alive",
-                    "X-TIMESTAMP": aa.time,
-                    "X-SESSION-ID": p,
-                    "X-REQUEST-ID": aa.uuid,
-                    "X-SIGNATURE": aa.signature,
-                    "X-TENANT-ID": q,
-                    "X-ACCOUNT-ID": r,
-                    "Cache-Control": "no-cache",
-                    "Accept-Encoding": "gzip",
-                    "user-agent": x
-                  }
-                };
-                $.get(ae, function () {
-                  var ag = i(g().mark(function ah(ai, aj, ak) {
-                    return g().wrap(function (al) {
-                      for (;;) {
-                        switch (al.prev = al.next) {
-                          case 0:
-                            if (al.prev = 0, !ai) {
-                              al.next = 6;
-                              break;
-                            }
-                            console.log("".concat(JSON.stringify(ai)));
-                            console.log("".concat($.name, " API请求失败，请检查网路重试"));
-                            al.next = 9;
-                            break;
-                          case 6:
-                            al.next = 8;
-                            return $.wait(2000);
-                          case 8:
-                            ad(JSON.parse(ak));
-                          case 9:
-                            al.next = 14;
-                            break;
-                          case 11:
-                            al.prev = 11;
-                            al.t0 = al.catch(0);
-                            $.logErr(al.t0, aj);
-                          case 14:
-                            al.prev = 14;
-                            ad();
-                            return al.finish(14);
-                          case 17:
-                          case "end":
-                            return al.stop();
-                        }
-                      }
-                    }, ah, null, [[0, 11, 14, 17]]);
-                  }));
-                  return function (ai, aj, ak) {
-                    return ag.apply(this, arguments);
-                  };
-                }());
-              }));
-            case 2:
-            case "end":
-              return ab.stop();
-          }
-        }
-      }, a7);
-    }));
-    return K.apply(this, arguments);
-  }
-  function L(a6, a7) {
-    return M.apply(this, arguments);
-  }
-  function M() {
-    M = i(g().mark(function a6(a7, a8) {
-      var aa;
-      return g().wrap(function (ab) {
-        for (;;) {
-          switch (ab.prev = ab.next) {
-            case 0:
-              aa = Y(a7);
-              return ab.abrupt("return", new Promise(function (ad) {
-                var af = {
-                  url: "https://vapp.tmuyun.com".concat(a7),
-                  headers: {
-                    Connection: "Keep-Alive",
-                    "X-TIMESTAMP": aa.time,
-                    "X-SESSION-ID": p,
-                    "X-REQUEST-ID": aa.uuid,
-                    "X-SIGNATURE": aa.signature,
-                    "X-TENANT-ID": q,
-                    "X-ACCOUNT-ID": r,
-                    "Cache-Control": "no-cache",
-                    "Accept-Encoding": "gzip",
-                    "user-agent": x
-                  },
-                  body: a8
-                };
-                $.post(af, function () {
-                  var ag = i(g().mark(function ah(ai, aj, ak) {
-                    return g().wrap(function (am) {
-                      for (;;) {
-                        switch (am.prev = am.next) {
-                          case 0:
-                            if (am.prev = 0, !ai) {
-                              am.next = 6;
-                              break;
-                            }
-                            console.log("".concat(JSON.stringify(ai)));
-                            console.log("".concat($.name, " API请求失败，请检查网路重试"));
-                            am.next = 9;
-                            break;
-                          case 6:
-                            am.next = 8;
-                            return $.wait(2000);
-                          case 8:
-                            ad(JSON.parse(ak));
-                          case 9:
-                            am.next = 14;
-                            break;
-                          case 11:
-                            am.prev = 11;
-                            am.t0 = am.catch(0);
-                            $.logErr(am.t0, aj);
-                          case 14:
-                            am.prev = 14;
-                            ad();
-                            return am.finish(14);
-                          case 17:
-                          case "end":
-                            return am.stop();
-                        }
-                      }
-                    }, ah, null, [[0, 11, 14, 17]]);
-                  }));
-                  return function (ai, aj, ak) {
-                    return ag.apply(this, arguments);
-                  };
-                }());
-              }));
-            case 2:
-            case "end":
-              return ab.stop();
-          }
-        }
-      }, a6);
-    }));
-    return M.apply(this, arguments);
-  }
-  function N(a6) {
-    return O.apply(this, arguments);
-  }
-  function O() {
-    O = i(g().mark(function a7(a8) {
-      return g().wrap(function (aa) {
-        for (;;) {
-          switch (aa.prev = aa.next) {
-            case 0:
-              return aa.abrupt("return", new Promise(function (ab) {
-                var ad = {
-                  url: "https://m.aihoge.com/api".concat(a8),
-                  headers: {
-                    Connection: "keep-alive",
-                    "X-DEVICE-SIGN": "xsb_hn",
-                    "X-CLIENT-VERSION": "1314",
-                    accept: "application/json, text/plain, */*",
-                    "user-agent": "Mozilla/5.0 (Linux; Android 11; 21091116AC Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/94.0.4606.85 Mobile Safari/537.36;xsb_hn;xsb_hn;14.1.6;native_app;6.11.0",
-                    "HTTP-X-H5-VERSION": "1",
-                    member: z,
-                    Limit: B,
-                    sessionId: p,
-                    "X-DEVICE-ID": "000",
-                    accountId: r,
-                    "x-requested-with": "com.hoge.android.app.dachao",
-                    "sec-fetch-site": "same-origin",
-                    "sec-fetch-mode": "cors",
-                    "sec-fetch-dest": "empty",
-                    Referer: "https://m.aihoge.com/h5?mark=news-read@designh5&tid=".concat(B, "&path=index&isNeedLogin=true"),
-                    "accept-encoding": "gzip, deflate",
-                    "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7"
-                  }
-                };
-                $.get(ad, function () {
-                  var af = i(g().mark(function ag(ah, ai, aj) {
-                    return g().wrap(function (al) {
-                      for (;;) {
-                        switch (al.prev = al.next) {
-                          case 0:
-                            if (al.prev = 0, !ah) {
-                              al.next = 6;
-                              break;
-                            }
-                            console.log("".concat(JSON.stringify(ah)));
-                            console.log("".concat($.name, " API请求失败，请检查网路重试"));
-                            al.next = 9;
-                            break;
-                          case 6:
-                            al.next = 8;
-                            return $.wait(2000);
-                          case 8:
-                            ab(JSON.parse(aj));
-                          case 9:
-                            al.next = 14;
-                            break;
-                          case 11:
-                            al.prev = 11;
-                            al.t0 = al.catch(0);
-                            $.logErr(al.t0, ai);
-                          case 14:
-                            al.prev = 14;
-                            ab();
-                            return al.finish(14);
-                          case 17:
-                          case "end":
-                            return al.stop();
-                        }
-                      }
-                    }, ag, null, [[0, 11, 14, 17]]);
-                  }));
-                  return function (ah, ai, aj) {
-                    return af.apply(this, arguments);
-                  };
-                }());
-              }));
-            case 1:
-            case "end":
-              return aa.stop();
-          }
-        }
-      }, a7);
-    }));
-    return O.apply(this, arguments);
-  }
-  function P(a6, a7) {
-    return Q.apply(this, arguments);
-  }
-  function Q() {
-    Q = i(g().mark(function a7(a8, a9) {
-      return g().wrap(function (ab) {
-        for (;;) {
-          switch (ab.prev = ab.next) {
-            case 0:
-              return ab.abrupt("return", new Promise(function (ad) {
-                var af = {
-                  url: "https://m.aihoge.com/api".concat(a8),
-                  headers: {
-                    Connection: "keep-alive",
-                    "X-DEVICE-SIGN": "xsb_hn",
-                    "X-CLIENT-VERSION": "1314",
-                    "Content-Type": "application/json;charset=UTF-8",
-                    accept: "application/json, text/plain, */*",
-                    "user-agent": "Mozilla/5.0 (Linux; Android 11; 21091116AC Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/94.0.4606.85 Mobile Safari/537.36;xsb_hn;xsb_hn;14.1.6;native_app;6.11.0",
-                    "HTTP-X-H5-VERSION": "1",
-                    member: z,
-                    Limit: B,
-                    sessionId: p,
-                    "X-DEVICE-ID": "000",
-                    accountId: r,
-                    "x-requested-with": "com.hoge.android.app.dachao",
-                    "sec-fetch-site": "same-origin",
-                    "sec-fetch-mode": "cors",
-                    "sec-fetch-dest": "empty",
-                    Referer: "https://m.aihoge.com/h5?mark=news-read@designh5&tid=".concat(B, "&path=index&isNeedLogin=true"),
-                    "accept-encoding": "gzip, deflate",
-                    "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7"
-                  },
-                  body: JSON.stringify(a9)
-                };
-                $.post(af, function () {
-                  var ah = i(g().mark(function ai(aj, ak, al) {
-                    return g().wrap(function (am) {
-                      for (;;) {
-                        switch (am.prev = am.next) {
-                          case 0:
-                            if (am.prev = 0, !aj) {
-                              am.next = 6;
-                              break;
-                            }
-                            console.log("".concat(JSON.stringify(aj)));
-                            console.log("".concat($.name, " API请求失败，请检查网路重试"));
-                            am.next = 9;
-                            break;
-                          case 6:
-                            am.next = 8;
-                            return $.wait(2000);
-                          case 8:
-                            ad(JSON.parse(al));
-                          case 9:
-                            am.next = 14;
-                            break;
-                          case 11:
-                            am.prev = 11;
-                            am.t0 = am.catch(0);
-                            $.logErr(am.t0, ak);
-                          case 14:
-                            am.prev = 14;
-                            ad();
-                            return am.finish(14);
-                          case 17:
-                          case "end":
-                            return am.stop();
-                        }
-                      }
-                    }, ai, null, [[0, 11, 14, 17]]);
-                  }));
-                  return function (aj, ak, al) {
-                    return ah.apply(this, arguments);
-                  };
-                }());
-              }));
-            case 1:
-            case "end":
-              return ab.stop();
-          }
-        }
-      }, a7);
-    }));
-    return Q.apply(this, arguments);
-  }
-  function R(a6, a7) {
-    return S.apply(this, arguments);
-  }
-  function S() {
-    S = i(g().mark(function a8(a9, aa) {
-      return g().wrap(function (ac) {
-        for (;;) {
-          switch (ac.prev = ac.next) {
-            case 0:
-              return ac.abrupt("return", new Promise(function (ad) {
-                var af = {
-                  url: "https://m.aihoge.com/api".concat(a9),
-                  headers: {
-                    Connection: "keep-alive",
-                    "X-DEVICE-SIGN": "wechat",
-                    "X-CLIENT-VERSION": "1314",
-                    "Content-Type": "application/json;charset=UTF-8",
-                    accept: "application/json, text/plain, */*",
-                    "user-agent": "Mozilla/5.0 (Linux; Android 11; 21091116AC Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/94.0.4606.85 Mobile Safari/537.36;xsb_hn;xsb_hn;14.1.6;native_app;6.11.0",
-                    "HTTP-X-H5-VERSION": "1",
-                    member: v,
-                    Limit: "default",
-                    "X-DEVICE-ID": "000",
-                    "sec-fetch-site": "same-origin",
-                    "sec-fetch-mode": "cors",
-                    "sec-fetch-dest": "empty",
-                    "accept-encoding": "gzip, deflate",
-                    "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7"
-                  },
-                  body: JSON.stringify(aa)
-                };
-                $.post(af, function () {
-                  var ah = i(g().mark(function ai(aj, ak, al) {
-                    return g().wrap(function (am) {
-                      for (;;) {
-                        switch (am.prev = am.next) {
-                          case 0:
-                            if (am.prev = 0, !aj) {
-                              am.next = 6;
-                              break;
-                            }
-                            console.log("".concat(JSON.stringify(aj)));
-                            console.log("".concat($.name, " API请求失败，请检查网路重试"));
-                            am.next = 9;
-                            break;
-                          case 6:
-                            am.next = 8;
-                            return $.wait(2000);
-                          case 8:
-                            ad(JSON.parse(al));
-                          case 9:
-                            am.next = 14;
-                            break;
-                          case 11:
-                            am.prev = 11;
-                            am.t0 = am.catch(0);
-                            $.logErr(am.t0, ak);
-                          case 14:
-                            am.prev = 14;
-                            ad();
-                            return am.finish(14);
-                          case 17:
-                          case "end":
-                            return am.stop();
-                        }
-                      }
-                    }, ai, null, [[0, 11, 14, 17]]);
-                  }));
-                  return function (aj, ak, al) {
-                    return ah.apply(this, arguments);
-                  };
-                }());
-              }));
-            case 1:
-            case "end":
-              return ac.stop();
-          }
-        }
-      }, a8);
-    }));
-    return S.apply(this, arguments);
-  }
-  function T(a6, a7) {
-    return U.apply(this, arguments);
-  }
-  function U() {
-    U = i(g().mark(function a7(a8, a9) {
-      return g().wrap(function (aa) {
-        for (;;) {
-          switch (aa.prev = aa.next) {
-            case 0:
-              return aa.abrupt("return", new Promise(function (ac) {
-                var ae = {
-                  url: "https://active.hndachao.cn".concat(a8),
-                  headers: {
-                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    accept: "application/json, text/javascript, */*; q=0.01",
-                    "x-requested-with": "XMLHttpRequest",
-                    "user-agent": "Mozilla/5.0 (Linux; Android 11; 21091116AC Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/94.0.4606.85 Mobile Safari/537.36;xsb_hn;xsb_hn;14.1.6;native_app;6.11.0",
-                    origin: "https://active.hndachao.cn",
-                    "sec-fetch-site": "same-origin",
-                    "sec-fetch-mode": "cors",
-                    "sec-fetch-dest": "empty",
-                    referer: "https://active.hndachao.cn/open/xxdtest/dailyMatch/bookflip.php",
-                    "accept-encoding": "gzip, deflate",
-                    "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-                    cookie: "dachaogo={\"openid\":\"".concat(r, "\",\"platform\":3}")
-                  },
-                  body: a9
-                };
-                $.post(ae, function () {
-                  var af = i(g().mark(function ag(ah, ai, aj) {
-                    return g().wrap(function (al) {
-                      for (;;) {
-                        switch (al.prev = al.next) {
-                          case 0:
-                            if (al.prev = 0, !ah) {
-                              al.next = 6;
-                              break;
-                            }
-                            console.log("".concat(JSON.stringify(ah)));
-                            console.log("".concat($.name, " API请求失败，请检查网路重试"));
-                            al.next = 9;
-                            break;
-                          case 6:
-                            al.next = 8;
-                            return $.wait(2000);
-                          case 8:
-                            ac(JSON.parse(aj));
-                          case 9:
-                            al.next = 14;
-                            break;
-                          case 11:
-                            al.prev = 11;
-                            al.t0 = al.catch(0);
-                            $.logErr(al.t0, ai);
-                          case 14:
-                            al.prev = 14;
-                            ac();
-                            return al.finish(14);
-                          case 17:
-                          case "end":
-                            return al.stop();
-                        }
-                      }
-                    }, ag, null, [[0, 11, 14, 17]]);
-                  }));
-                  return function (ah, ai, aj) {
-                    return af.apply(this, arguments);
-                  };
-                }());
-              }));
-            case 1:
-            case "end":
-              return aa.stop();
-          }
-        }
-      }, a7);
-    }));
-    return U.apply(this, arguments);
-  }
-  function V(a6, a7) {
-    return W.apply(this, arguments);
-  }
-  function W() {
-    W = i(g().mark(function a7(a8, a9) {
-      return g().wrap(function (ac) {
-        for (;;) {
-          switch (ac.prev = ac.next) {
-            case 0:
-              return ac.abrupt("return", new Promise(function (af) {
-                var ah = {
-                  "Content-Type": "application/json"
-                };
-                var ai = {
-                  url: a8,
-                  headers: ah,
-                  body: JSON.stringify(a9)
-                };
-                $.post(ai, function (aj, ak, al) {
-                  try {
-                    aj ? (console.log("".concat(JSON.stringify(aj))), console.log("".concat($.name, " API请求失败，请检查网路重试"))) : af(JSON.parse(al));
-                  } catch (am) {
-                    $.logErr(am, ak);
-                  } finally {
-                    af();
-                  }
-                });
-              }));
-            case 1:
-            case "end":
-              return ac.stop();
-          }
-        }
-      }, a7);
-    }));
-    return W.apply(this, arguments);
-  }
-  function X() {
-    var aa = new (l.loadJSEncrypt())();
-    aa.setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD6XO7e9YeAOs+cFqwa7ETJ+WXizPqQeXv68i5vqw9pFREsrqiBTRcg7wB0RIp3rJkDpaeVJLsZqYm5TW7FWx/iOiXFc+zCPvaKZric2dXCw27EvlH5rq+zwIPDAJHGAfnn1nmQH7wR3PCatEIb8pz5GFlTHMlluw4ZYmnOwg+thwIDAQAB");
-    u = aa.encrypt(u);
-    var ac = Z();
-    var ad = "client_id=".concat(s, "&password=").concat(u, "&phone_number=").concat(t);
-    var ae = "post%%/web/oauth/credential_auth?".concat(ad, "%%").concat(ac, "%%");
-    ad = "client_id=".concat(s, "&password=").concat(encodeURIComponent(u), "&phone_number=").concat(t);
-    CryptoJS = l.createCryptoJS();
-    var a8 = CryptoJS.HmacSHA256(ae, m);
-    var a9 = CryptoJS.enc.Hex.stringify(a8);
-    var ab = {
-      uuid: ac,
-      signature: a9,
-      body: ad
-    };
-    return ab;
-  }
-  function Y(a6) {
-    var a7 = Z();
-    var a8 = Date.now();
-    a6.indexOf("?") > 0 && (a6 = a6.substring(0, a6.indexOf("?")));
-    CryptoJS = l.createCryptoJS();
-    var a9 = CryptoJS.SHA256("".concat(a6, "&&").concat(p, "&&").concat(a7, "&&").concat(a8, "&&FR*r!isE5W&&").concat(q)).toString();
-    var aa = {
-      uuid: a7,
-      time: a8,
-      signature: a9
-    };
-    return aa;
-  }
-  function Z() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (a7) {
-      var a8 = 16 * Math.random() | 0;
-      var a9 = "x" === a7 ? a8 : 3 & a8 | 8;
-      return a9.toString(16);
     });
-  }
-  function a0(a6) {
-    return a6[Math.floor(Math.random() * a6.length)];
-  }
-  function a1() {
-    var a6 = "14.1.6";
-    var a7 = Z();
-    var a8 = a0(["M1903F2A", "M2001J2E", "M2001J2C", "M2001J1E", "M2001J1C", "M2002J9E", "M2011K2C", "M2102K1C", "M2101K9C", "2107119DC", "2201123C", "2112123AC", "2201122C", "2211133C", "2210132C", "2304FPN6DC", "23127PN0CC", "24031PN0DC", "23090RA98C", "2312DRA50C", "2312CRAD3C", "2312DRAABC", "22101316UCP", "22101316C"]);
-    var a9 = "Xiaomi " + a8;
-    var aa = "Android";
-    var ab = "".concat(aa.toUpperCase(), ";").concat("11", ";").concat(s, ";").concat(a6, ";1.0;null;").concat(a8);
-    var ac = "".concat(a6, ";").concat(a7, ";").concat(a9, ";").concat(aa, ";").concat("11", ";").concat("6.11.0");
-    var ad = {
-      ua: ab,
-      commonUa: ac,
-      uuid: a7
-    };
-    return ad;
-  }
-  function a2() {
-    return a3.apply(this, arguments);
-  }
-  function a3() {
-    a3 = i(g().mark(function a7() {
-      var a8;
-      return g().wrap(function a9(aa) {
-        for (;;) {
-          switch (aa.prev = aa.next) {
-            case 0:
-              if (a8 = $.getdata("Utils_Code") || "", !a8 || !Object.keys(a8).length) {
-                aa.next = 5;
-                break;
-              }
-              console.log("✅ ".concat($.name, ": 缓存中存在Utils代码, 跳过下载"));
-              eval(a8);
-              return aa.abrupt("return", creatUtils());
-            case 5:
-              console.log("🚀 ".concat($.name, ": 开始下载Utils代码"));
-              return aa.abrupt("return", new Promise(function () {
-                var ae = i(g().mark(function af(ag) {
-                  return g().wrap(function ai(aj) {
-                    for (;;) {
-                      switch (aj.prev = aj.next) {
-                        case 0:
-                          $.getScript("https://mirror.ghproxy.com/https://raw.githubusercontent.com/xzxxn777/Surge/main/Utils/Utils.js").then(function (ak) {
-                            $.setdata(ak, "Utils_Code");
-                            eval(ak);
-                            console.log("✅ Utils加载成功, 请继续");
-                            ag(creatUtils());
-                          });
-                        case 1:
-                        case "end":
-                          return aj.stop();
-                      }
-                    }
-                  }, af);
-                }));
-                return function (ag) {
-                  return ae.apply(this, arguments);
-                };
-              }()));
-            case 7:
-            case "end":
-              return aa.stop();
-          }
-        }
-      }, a7);
-    }));
-    return a3.apply(this, arguments);
-  }
-  function a4(a6) {
-    return a5.apply(this, arguments);
-  }
-  function a5() {
-    a5 = i(g().mark(function a7(a8) {
-      return g().wrap(function (a9) {
-        for (;;) {
-          switch (a9.prev = a9.next) {
-            case 0:
-              if (!$.isNode()) {
-                a9.next = 5;
-                break;
-              }
-              a9.next = 3;
-              return notify.sendNotify($.name, a8);
-            case 3:
-              a9.next = 6;
-              break;
-            case 5:
-              $.msg($.name, "", a8);
-            case 6:
-            case "end":
-              return a9.stop();
-          }
-        }
-      }, a7);
-    }));
-    return a5.apply(this, arguments);
-  }
-  i(g().mark(function a6() {
-    return g().wrap(function (a8) {
-      for (;;) {
-        switch (a8.prev = a8.next) {
-          case 0:
-            a8.next = 2;
-            return D();
-          case 2:
-          case "end":
-            return a8.stop();
-        }
-      }
-    }, a6);
-  }))().catch(function (a7) {
-    $.log(a7);
-  }).finally(function () {
-    $.done({});
   });
-})();
+}
+function SJS(_0x54b700) {
+  _0x54b700 = _0x54b700 || 32;
+  var _0x86d60f = "1234567890";
+  var _0x2dbcda = _0x86d60f.length;
+  var _0x241eeb = "";
+  for (i = 0; i < _0x54b700; i++) {
+    _0x241eeb += _0x86d60f.charAt(Math.floor(Math.random() * _0x2dbcda));
+  }
+  return _0x241eeb;
+}
+function SJSxx(_0x26a12f) {
+  _0x26a12f = _0x26a12f || 32;
+  var _0x254348 = "abcdefghijklmnopqrstuvwxyz1234567890";
+  var _0x2e86bb = _0x254348.length;
+  var _0x20682e = "";
+  for (i = 0; i < _0x26a12f; i++) {
+    _0x20682e += _0x254348.charAt(Math.floor(Math.random() * _0x2e86bb));
+  }
+  return _0x20682e;
+}
+function safeGet(_0x3929fc) {
+  try {
+    if (typeof JSON.parse(_0x3929fc) == "object") {
+      return true;
+    }
+  } catch (_0x7b9b2c) {
+    return false;
+  }
+}
+function lengthInUtf8Bytes(_0x4cb0af) {
+  let _0x1da2ac = encodeURIComponent(_0x4cb0af).match(/%[89ABab]/g);
+  return _0x4cb0af.length + (_0x1da2ac ? _0x1da2ac.length : 0);
+}
+async function checkEnv() {
+  let _0x15fb12 = process.env[VALY] || CK;
+  let _0x180e82 = 0;
+  if (_0x15fb12) {
+    for (let _0x197e46 of _0x15fb12.split("@").filter(_0x5a10e1 => !!_0x5a10e1)) {
+      userList.push(new Bar(_0x197e46));
+    }
+    _0x180e82 = userList.length;
+  } else {
+    console.log("\n【" + NAME + "】：未填写变量: " + VALY);
+  }
+  console.log("共找到" + _0x180e82 + "个账号");
+  return userList;
+}
+function wait(_0x29659b) {
+  return new Promise(_0x51c29c => setTimeout(_0x51c29c, _0x29659b));
+}
+function stringToBase64(_0x2e1329) {
+  var _0x140860 = Buffer.from(_0x2e1329).toString("base64");
+  return _0x140860;
+}
+function EncryptCrypto(_0x33fd7f, _0x4c4709, _0x593521, _0x1e9da5, _0x4c45ba, _0x4b8e4e) {
+  const _0x541c0f = require("crypto-js");
+  const _0x4e7b46 = _0x541c0f.enc.Utf8.parse(_0x1e9da5);
+  const _0x5d01a0 = _0x541c0f.enc.Utf8.parse(_0x4b8e4e);
+  const _0x4b15f6 = _0x541c0f.enc.Utf8.parse(_0x4c45ba);
+  const _0x2ee94e = _0x541c0f[_0x33fd7f].encrypt(_0x4e7b46, _0x4b15f6, {
+    iv: _0x5d01a0,
+    mode: _0x541c0f.mode[_0x4c4709],
+    padding: _0x541c0f.pad[_0x593521]
+  });
+  return _0x2ee94e.toString();
+}
+function DecryptCrypto(_0x203aac, _0x233aad, _0x93b402, _0x605509, _0x111b36, _0x55bb0e) {
+  const _0x5567bd = require("crypto-js");
+  const _0x1f89eb = _0x5567bd.enc.Utf8.parse(_0x55bb0e);
+  const _0x333d8e = _0x5567bd.enc.Utf8.parse(_0x111b36);
+  const _0x398161 = _0x5567bd[_0x203aac].decrypt(_0x605509, _0x333d8e, {
+    iv: _0x1f89eb,
+    mode: _0x5567bd.mode[_0x233aad],
+    padding: _0x5567bd.pad[_0x93b402]
+  });
+  return _0x398161.toString(_0x5567bd.enc.Utf8);
+}
+function RSA(_0x3a1047, _0x5085cf) {
+  const _0x5213d7 = require("node-rsa");
+  let _0x4974b2 = new _0x5213d7("-----BEGIN PUBLIC KEY-----\n" + _0x5085cf + "\n-----END PUBLIC KEY-----");
+  _0x4974b2.setOptions({
+    encryptionScheme: "pkcs1"
+  });
+  return _0x4974b2.encrypt(_0x3a1047, "base64", "utf8");
+}
+function SHA1_Encrypt(_0xf58074) {
+  return CryptoJS.SHA1(_0xf58074).toString();
+}
+function SHA256(_0x305846) {
+  const _0x5121c9 = 8;
+  const _0x31e4f1 = 0;
+  function _0x23dc58(_0x37d453, _0x20a576) {
+    const _0x2bdd63 = (65535 & _0x37d453) + (65535 & _0x20a576);
+    return (_0x37d453 >> 16) + (_0x20a576 >> 16) + (_0x2bdd63 >> 16) << 16 | 65535 & _0x2bdd63;
+  }
+  function _0x2596f1(_0x32ec2f, _0x2fdb2c) {
+    return _0x32ec2f >>> _0x2fdb2c | _0x32ec2f << 32 - _0x2fdb2c;
+  }
+  function _0x200ed6(_0xc54643, _0x1b0f83) {
+    return _0xc54643 >>> _0x1b0f83;
+  }
+  function _0x44410d(_0x738551, _0x423930, _0x5b7791) {
+    return _0x738551 & _0x423930 ^ ~_0x738551 & _0x5b7791;
+  }
+  function _0x3aed2f(_0xc0ea6a, _0x39aaa0, _0x47eb81) {
+    return _0xc0ea6a & _0x39aaa0 ^ _0xc0ea6a & _0x47eb81 ^ _0x39aaa0 & _0x47eb81;
+  }
+  function _0x169fde(_0xfe33b3) {
+    return _0x2596f1(_0xfe33b3, 2) ^ _0x2596f1(_0xfe33b3, 13) ^ _0x2596f1(_0xfe33b3, 22);
+  }
+  function _0x4c57f8(_0x5555f7) {
+    return _0x2596f1(_0x5555f7, 6) ^ _0x2596f1(_0x5555f7, 11) ^ _0x2596f1(_0x5555f7, 25);
+  }
+  function _0x45ca34(_0x46f636) {
+    return _0x2596f1(_0x46f636, 7) ^ _0x2596f1(_0x46f636, 18) ^ _0x200ed6(_0x46f636, 3);
+  }
+  return function (_0x4bc2e8) {
+    const _0x5b60c1 = _0x31e4f1 ? "0123456789ABCDEF" : "0123456789abcdef";
+    let _0x4875cd = "";
+    for (let _0x98572e = 0; _0x98572e < 4 * _0x4bc2e8.length; _0x98572e++) {
+      _0x4875cd += _0x5b60c1.charAt(_0x4bc2e8[_0x98572e >> 2] >> 8 * (3 - _0x98572e % 4) + 4 & 15) + _0x5b60c1.charAt(_0x4bc2e8[_0x98572e >> 2] >> 8 * (3 - _0x98572e % 4) & 15);
+    }
+    return _0x4875cd;
+  }(function (_0x910536, _0x55c545) {
+    const _0x3777fd = [1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993, 2453635748, 2870763221, 3624381080, 310598401, 607225278, 1426881987, 1925078388, 2162078206, 2614888103, 3248222580, 3835390401, 4022224774, 264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986, 2554220882, 2821834349, 2952996808, 3210313671, 3336571891, 3584528711, 113926993, 338241895, 666307205, 773529912, 1294757372, 1396182291, 1695183700, 1986661051, 2177026350, 2456956037, 2730485921, 2820302411, 3259730800, 3345764771, 3516065817, 3600352804, 4094571909, 275423344, 430227734, 506948616, 659060556, 883997877, 958139571, 1322822218, 1537002063, 1747873779, 1955562222, 2024104815, 2227730452, 2361852424, 2428436474, 2756734187, 3204031479, 3329325298];
+    const _0x12c7a5 = [1779033703, 3144134277, 1013904242, 2773480762, 1359893119, 2600822924, 528734635, 1541459225];
+    const _0x5c8ce6 = new Array(64);
+    let _0x282cf6;
+    let _0x50f2c5;
+    let _0x50cb97;
+    let _0xb576fb;
+    let _0x5a4de2;
+    let _0x24a6ab;
+    let _0xacaed7;
+    let _0x554f11;
+    let _0x27de19;
+    let _0x5899cd;
+    let _0x256d1c;
+    let _0x28fa54;
+    for (_0x910536[_0x55c545 >> 5] |= 128 << 24 - _0x55c545 % 32, _0x910536[15 + (_0x55c545 + 64 >> 9 << 4)] = _0x55c545, _0x27de19 = 0; _0x27de19 < _0x910536.length; _0x27de19 += 16) {
+      for (_0x282cf6 = _0x12c7a5[0], _0x50f2c5 = _0x12c7a5[1], _0x50cb97 = _0x12c7a5[2], _0xb576fb = _0x12c7a5[3], _0x5a4de2 = _0x12c7a5[4], _0x24a6ab = _0x12c7a5[5], _0xacaed7 = _0x12c7a5[6], _0x554f11 = _0x12c7a5[7], _0x5899cd = 0; _0x5899cd < 64; _0x5899cd++) {
+        _0x5c8ce6[_0x5899cd] = _0x5899cd < 16 ? _0x910536[_0x5899cd + _0x27de19] : _0x23dc58(_0x23dc58(_0x23dc58(_0x2596f1(_0x50100b = _0x5c8ce6[_0x5899cd - 2], 17) ^ _0x2596f1(_0x50100b, 19) ^ _0x200ed6(_0x50100b, 10), _0x5c8ce6[_0x5899cd - 7]), _0x45ca34(_0x5c8ce6[_0x5899cd - 15])), _0x5c8ce6[_0x5899cd - 16]);
+        _0x256d1c = _0x23dc58(_0x23dc58(_0x23dc58(_0x23dc58(_0x554f11, _0x4c57f8(_0x5a4de2)), _0x44410d(_0x5a4de2, _0x24a6ab, _0xacaed7)), _0x3777fd[_0x5899cd]), _0x5c8ce6[_0x5899cd]);
+        _0x28fa54 = _0x23dc58(_0x169fde(_0x282cf6), _0x3aed2f(_0x282cf6, _0x50f2c5, _0x50cb97));
+        _0x554f11 = _0xacaed7;
+        _0xacaed7 = _0x24a6ab;
+        _0x24a6ab = _0x5a4de2;
+        _0x5a4de2 = _0x23dc58(_0xb576fb, _0x256d1c);
+        _0xb576fb = _0x50cb97;
+        _0x50cb97 = _0x50f2c5;
+        _0x50f2c5 = _0x282cf6;
+        _0x282cf6 = _0x23dc58(_0x256d1c, _0x28fa54);
+      }
+      _0x12c7a5[0] = _0x23dc58(_0x282cf6, _0x12c7a5[0]);
+      _0x12c7a5[1] = _0x23dc58(_0x50f2c5, _0x12c7a5[1]);
+      _0x12c7a5[2] = _0x23dc58(_0x50cb97, _0x12c7a5[2]);
+      _0x12c7a5[3] = _0x23dc58(_0xb576fb, _0x12c7a5[3]);
+      _0x12c7a5[4] = _0x23dc58(_0x5a4de2, _0x12c7a5[4]);
+      _0x12c7a5[5] = _0x23dc58(_0x24a6ab, _0x12c7a5[5]);
+      _0x12c7a5[6] = _0x23dc58(_0xacaed7, _0x12c7a5[6]);
+      _0x12c7a5[7] = _0x23dc58(_0x554f11, _0x12c7a5[7]);
+    }
+    var _0x50100b;
+    return _0x12c7a5;
+  }(function (_0x53dc3a) {
+    const _0x302c25 = [];
+    const _0x428cff = (1 << _0x5121c9) - 1;
+    for (let _0x48e837 = 0; _0x48e837 < _0x53dc3a.length * _0x5121c9; _0x48e837 += _0x5121c9) {
+      _0x302c25[_0x48e837 >> 5] |= (_0x53dc3a.charCodeAt(_0x48e837 / _0x5121c9) & _0x428cff) << 24 - _0x48e837 % 32;
+    }
+    return _0x302c25;
+  }(_0x305846 = function (_0x2e5a44) {
+    _0x2e5a44 = _0x2e5a44.replace(/\r\n/g, "\n");
+    let _0xf0a1c3 = "";
+    for (let _0xb2c716 = 0; _0xb2c716 < _0x2e5a44.length; _0xb2c716++) {
+      const _0xfcfd25 = _0x2e5a44.charCodeAt(_0xb2c716);
+      _0xfcfd25 < 128 ? _0xf0a1c3 += String.fromCharCode(_0xfcfd25) : _0xfcfd25 > 127 && _0xfcfd25 < 2048 ? (_0xf0a1c3 += String.fromCharCode(_0xfcfd25 >> 6 | 192), _0xf0a1c3 += String.fromCharCode(63 & _0xfcfd25 | 128)) : (_0xf0a1c3 += String.fromCharCode(_0xfcfd25 >> 12 | 224), _0xf0a1c3 += String.fromCharCode(_0xfcfd25 >> 6 & 63 | 128), _0xf0a1c3 += String.fromCharCode(63 & _0xfcfd25 | 128));
+    }
+    return _0xf0a1c3;
+  }(_0x305846)), _0x305846.length * _0x5121c9));
+}
+function MD5Encrypt(_0x7defc8) {
+  function _0x1a18b1(_0x2fa69f, _0x244ec3) {
+    return _0x2fa69f << _0x244ec3 | _0x2fa69f >>> 32 - _0x244ec3;
+  }
+  function _0x34fdd3(_0x9b916d, _0xb52cd7) {
+    var _0x1883cf;
+    var _0x310e2f;
+    var _0x2da0c8;
+    var _0x272e91;
+    var _0x582acd;
+    _0x2da0c8 = 2147483648 & _0x9b916d;
+    _0x272e91 = 2147483648 & _0xb52cd7;
+    _0x1883cf = 1073741824 & _0x9b916d;
+    _0x310e2f = 1073741824 & _0xb52cd7;
+    _0x582acd = (1073741823 & _0x9b916d) + (1073741823 & _0xb52cd7);
+    return _0x1883cf & _0x310e2f ? 2147483648 ^ _0x582acd ^ _0x2da0c8 ^ _0x272e91 : _0x1883cf | _0x310e2f ? 1073741824 & _0x582acd ? 3221225472 ^ _0x582acd ^ _0x2da0c8 ^ _0x272e91 : 1073741824 ^ _0x582acd ^ _0x2da0c8 ^ _0x272e91 : _0x582acd ^ _0x2da0c8 ^ _0x272e91;
+  }
+  function _0x44e3f4(_0x32e932, _0x19ef3e, _0x59e678, _0x3d1dd8, _0x372b82, _0x488aaf, _0x115453) {
+    var _0x47117e;
+    var _0x2ae214;
+    _0x32e932 = _0x34fdd3(_0x32e932, _0x34fdd3(_0x34fdd3((_0x47117e = _0x19ef3e) & (_0x2ae214 = _0x59e678) | ~_0x47117e & _0x3d1dd8, _0x372b82), _0x115453));
+    return _0x34fdd3(_0x1a18b1(_0x32e932, _0x488aaf), _0x19ef3e);
+  }
+  function _0x10381e(_0x604e0a, _0x158b43, _0x1fa98c, _0x22ee6a, _0x5d535f, _0x2af55d, _0x2b3b03) {
+    var _0x1511bb;
+    var _0x1ad5d3;
+    var _0xec9f79;
+    _0x604e0a = _0x34fdd3(_0x604e0a, _0x34fdd3(_0x34fdd3((_0x1511bb = _0x158b43, _0x1ad5d3 = _0x1fa98c, _0x1511bb & (_0xec9f79 = _0x22ee6a) | _0x1ad5d3 & ~_0xec9f79), _0x5d535f), _0x2b3b03));
+    return _0x34fdd3(_0x1a18b1(_0x604e0a, _0x2af55d), _0x158b43);
+  }
+  function _0x19f7d3(_0x3e8c94, _0x2e8e3a, _0x4a3b01, _0x282ada, _0x4c8f7f, _0x297166, _0x4f8ecb) {
+    var _0x3f0535;
+    var _0x4f0869;
+    _0x3e8c94 = _0x34fdd3(_0x3e8c94, _0x34fdd3(_0x34fdd3((_0x3f0535 = _0x2e8e3a) ^ (_0x4f0869 = _0x4a3b01) ^ _0x282ada, _0x4c8f7f), _0x4f8ecb));
+    return _0x34fdd3(_0x1a18b1(_0x3e8c94, _0x297166), _0x2e8e3a);
+  }
+  function _0xc8b12b(_0x532c4b, _0x5cbf51, _0x1952a6, _0x5bc403, _0x4c5f83, _0x5dddfa, _0x371bb6) {
+    var _0x1f8dda;
+    var _0x22e6e3;
+    _0x532c4b = _0x34fdd3(_0x532c4b, _0x34fdd3(_0x34fdd3((_0x1f8dda = _0x5cbf51, (_0x22e6e3 = _0x1952a6) ^ (_0x1f8dda | ~_0x5bc403)), _0x4c5f83), _0x371bb6));
+    return _0x34fdd3(_0x1a18b1(_0x532c4b, _0x5dddfa), _0x5cbf51);
+  }
+  function _0x53bf37(_0x137840) {
+    var _0x5c1261;
+    var _0x5d5c63 = "";
+    var _0x2f0e19 = "";
+    for (_0x5c1261 = 0; 3 >= _0x5c1261; _0x5c1261++) {
+      _0x5d5c63 += (_0x2f0e19 = "0" + (_0x137840 >>> 8 * _0x5c1261 & 255).toString(16)).substr(_0x2f0e19.length - 2, 2);
+    }
+    return _0x5d5c63;
+  }
+  var _0x30d7ca;
+  var _0x9bc83f;
+  var _0x9a5860;
+  var _0x5355f8;
+  var _0x4afd91;
+  var _0x4cdc47;
+  var _0x578272;
+  var _0xe8db18;
+  var _0x474928;
+  var _0x19fe47 = [];
+  for (_0x19fe47 = function (_0x1e0786) {
+    for (var _0x2a2118, _0x53ed4d = _0x1e0786.length, _0x49e3bd = _0x53ed4d + 8, _0x4376e8 = 16 * ((_0x49e3bd - _0x49e3bd % 64) / 64 + 1), _0x1f1a33 = Array(_0x4376e8 - 1), _0xceb33d = 0, _0x49bdfc = 0; _0x53ed4d > _0x49bdfc;) {
+      _0x2a2118 = (_0x49bdfc - _0x49bdfc % 4) / 4;
+      _0xceb33d = _0x49bdfc % 4 * 8;
+      _0x1f1a33[_0x2a2118] = _0x1f1a33[_0x2a2118] | _0x1e0786.charCodeAt(_0x49bdfc) << _0xceb33d;
+      _0x49bdfc++;
+    }
+    _0x2a2118 = (_0x49bdfc - _0x49bdfc % 4) / 4;
+    _0xceb33d = _0x49bdfc % 4 * 8;
+    _0x1f1a33[_0x2a2118] = _0x1f1a33[_0x2a2118] | 128 << _0xceb33d;
+    _0x1f1a33[_0x4376e8 - 2] = _0x53ed4d << 3;
+    _0x1f1a33[_0x4376e8 - 1] = _0x53ed4d >>> 29;
+    return _0x1f1a33;
+  }(_0x7defc8 = function (_0x15a7af) {
+    _0x15a7af = _0x15a7af.replace(/\r\n/g, "\n");
+    for (var _0x394694 = "", _0x5790b0 = 0; _0x5790b0 < _0x15a7af.length; _0x5790b0++) {
+      var _0x5b06a7 = _0x15a7af.charCodeAt(_0x5790b0);
+      128 > _0x5b06a7 ? _0x394694 += String.fromCharCode(_0x5b06a7) : _0x5b06a7 > 127 && 2048 > _0x5b06a7 ? (_0x394694 += String.fromCharCode(_0x5b06a7 >> 6 | 192), _0x394694 += String.fromCharCode(63 & _0x5b06a7 | 128)) : (_0x394694 += String.fromCharCode(_0x5b06a7 >> 12 | 224), _0x394694 += String.fromCharCode(_0x5b06a7 >> 6 & 63 | 128), _0x394694 += String.fromCharCode(63 & _0x5b06a7 | 128));
+    }
+    return _0x394694;
+  }(_0x7defc8)), _0x4cdc47 = 1732584193, _0x578272 = 4023233417, _0xe8db18 = 2562383102, _0x474928 = 271733878, _0x30d7ca = 0; _0x30d7ca < _0x19fe47.length; _0x30d7ca += 16) {
+    _0x9bc83f = _0x4cdc47;
+    _0x9a5860 = _0x578272;
+    _0x5355f8 = _0xe8db18;
+    _0x4afd91 = _0x474928;
+    _0x4cdc47 = _0x44e3f4(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 0], 7, 3614090360);
+    _0x474928 = _0x44e3f4(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 1], 12, 3905402710);
+    _0xe8db18 = _0x44e3f4(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 2], 17, 606105819);
+    _0x578272 = _0x44e3f4(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 3], 22, 3250441966);
+    _0x4cdc47 = _0x44e3f4(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 4], 7, 4118548399);
+    _0x474928 = _0x44e3f4(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 5], 12, 1200080426);
+    _0xe8db18 = _0x44e3f4(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 6], 17, 2821735955);
+    _0x578272 = _0x44e3f4(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 7], 22, 4249261313);
+    _0x4cdc47 = _0x44e3f4(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 8], 7, 1770035416);
+    _0x474928 = _0x44e3f4(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 9], 12, 2336552879);
+    _0xe8db18 = _0x44e3f4(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 10], 17, 4294925233);
+    _0x578272 = _0x44e3f4(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 11], 22, 2304563134);
+    _0x4cdc47 = _0x44e3f4(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 12], 7, 1804603682);
+    _0x474928 = _0x44e3f4(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 13], 12, 4254626195);
+    _0xe8db18 = _0x44e3f4(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 14], 17, 2792965006);
+    _0x578272 = _0x44e3f4(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 15], 22, 1236535329);
+    _0x4cdc47 = _0x10381e(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 1], 5, 4129170786);
+    _0x474928 = _0x10381e(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 6], 9, 3225465664);
+    _0xe8db18 = _0x10381e(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 11], 14, 643717713);
+    _0x578272 = _0x10381e(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 0], 20, 3921069994);
+    _0x4cdc47 = _0x10381e(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 5], 5, 3593408605);
+    _0x474928 = _0x10381e(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 10], 9, 38016083);
+    _0xe8db18 = _0x10381e(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 15], 14, 3634488961);
+    _0x578272 = _0x10381e(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 4], 20, 3889429448);
+    _0x4cdc47 = _0x10381e(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 9], 5, 568446438);
+    _0x474928 = _0x10381e(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 14], 9, 3275163606);
+    _0xe8db18 = _0x10381e(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 3], 14, 4107603335);
+    _0x578272 = _0x10381e(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 8], 20, 1163531501);
+    _0x4cdc47 = _0x10381e(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 13], 5, 2850285829);
+    _0x474928 = _0x10381e(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 2], 9, 4243563512);
+    _0xe8db18 = _0x10381e(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 7], 14, 1735328473);
+    _0x578272 = _0x10381e(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 12], 20, 2368359562);
+    _0x4cdc47 = _0x19f7d3(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 5], 4, 4294588738);
+    _0x474928 = _0x19f7d3(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 8], 11, 2272392833);
+    _0xe8db18 = _0x19f7d3(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 11], 16, 1839030562);
+    _0x578272 = _0x19f7d3(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 14], 23, 4259657740);
+    _0x4cdc47 = _0x19f7d3(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 1], 4, 2763975236);
+    _0x474928 = _0x19f7d3(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 4], 11, 1272893353);
+    _0xe8db18 = _0x19f7d3(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 7], 16, 4139469664);
+    _0x578272 = _0x19f7d3(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 10], 23, 3200236656);
+    _0x4cdc47 = _0x19f7d3(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 13], 4, 681279174);
+    _0x474928 = _0x19f7d3(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 0], 11, 3936430074);
+    _0xe8db18 = _0x19f7d3(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 3], 16, 3572445317);
+    _0x578272 = _0x19f7d3(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 6], 23, 76029189);
+    _0x4cdc47 = _0x19f7d3(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 9], 4, 3654602809);
+    _0x474928 = _0x19f7d3(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 12], 11, 3873151461);
+    _0xe8db18 = _0x19f7d3(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 15], 16, 530742520);
+    _0x578272 = _0x19f7d3(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 2], 23, 3299628645);
+    _0x4cdc47 = _0xc8b12b(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 0], 6, 4096336452);
+    _0x474928 = _0xc8b12b(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 7], 10, 1126891415);
+    _0xe8db18 = _0xc8b12b(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 14], 15, 2878612391);
+    _0x578272 = _0xc8b12b(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 5], 21, 4237533241);
+    _0x4cdc47 = _0xc8b12b(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 12], 6, 1700485571);
+    _0x474928 = _0xc8b12b(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 3], 10, 2399980690);
+    _0xe8db18 = _0xc8b12b(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 10], 15, 4293915773);
+    _0x578272 = _0xc8b12b(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 1], 21, 2240044497);
+    _0x4cdc47 = _0xc8b12b(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 8], 6, 1873313359);
+    _0x474928 = _0xc8b12b(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 15], 10, 4264355552);
+    _0xe8db18 = _0xc8b12b(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 6], 15, 2734768916);
+    _0x578272 = _0xc8b12b(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 13], 21, 1309151649);
+    _0x4cdc47 = _0xc8b12b(_0x4cdc47, _0x578272, _0xe8db18, _0x474928, _0x19fe47[_0x30d7ca + 4], 6, 4149444226);
+    _0x474928 = _0xc8b12b(_0x474928, _0x4cdc47, _0x578272, _0xe8db18, _0x19fe47[_0x30d7ca + 11], 10, 3174756917);
+    _0xe8db18 = _0xc8b12b(_0xe8db18, _0x474928, _0x4cdc47, _0x578272, _0x19fe47[_0x30d7ca + 2], 15, 718787259);
+    _0x578272 = _0xc8b12b(_0x578272, _0xe8db18, _0x474928, _0x4cdc47, _0x19fe47[_0x30d7ca + 9], 21, 3951481745);
+    _0x4cdc47 = _0x34fdd3(_0x4cdc47, _0x9bc83f);
+    _0x578272 = _0x34fdd3(_0x578272, _0x9a5860);
+    _0xe8db18 = _0x34fdd3(_0xe8db18, _0x5355f8);
+    _0x474928 = _0x34fdd3(_0x474928, _0x4afd91);
+  }
+  return (_0x53bf37(_0x4cdc47) + _0x53bf37(_0x578272) + _0x53bf37(_0xe8db18) + _0x53bf37(_0x474928)).toLowerCase();
+}
